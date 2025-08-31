@@ -11,7 +11,7 @@ import QuickForms from '../DataCapture/QuickForms';
 import FloatingParticles from '../Shared/FloatingParticles';
 import AnimatedWorldMap from '../Shared/AnimatedWorldMap';
 import AnimatedCounter from '../Shared/AnimatedCounter';
-type ViewMode = 'public' | 'donor' | 'partner' | 'hq';
+type ViewMode = 'hq' | 'partner';
 const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
   const [demoMode, setDemoMode] = useState(false);
@@ -60,11 +60,9 @@ const DashboardLayout = () => {
             {/* View Mode Switcher */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">View as:</span>
-              <select value={viewMode} onChange={e => setViewMode(e.target.value as ViewMode)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent">
-                <option value="public">Public View</option>
-                <option value="donor">Donor Dashboard</option>
-                <option value="partner">Partner Portal</option>
+               <select value={viewMode} onChange={e => setViewMode(e.target.value as ViewMode)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent">
                 <option value="hq">HQ Control Center</option>
+                <option value="partner">Partners</option>
               </select>
             </div>
 
