@@ -13,6 +13,7 @@ import AnimatedWorldMap from '../Shared/AnimatedWorldMap';
 import AnimatedCounter from '../Shared/AnimatedCounter';
 import AdminDashboard from '../HQ/AdminDashboard';
 import FileUploader from '../Partners/FileUploader';
+import GoogleSheetsConnector from './GoogleSheetsConnector';
 type ViewMode = 'hq' | 'partner';
 const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
@@ -158,6 +159,11 @@ const DashboardLayout = () => {
           </TabsContent>
           
           <TabsContent value="communications" className="space-y-6">
+            {/* Google Sheets Connector */}
+            <div className="enhanced-card p-6">
+              <GoogleSheetsConnector />
+            </div>
+            
             {/* Impact Metrics - Full Width */}
             <div className="enhanced-card">
               <MetricsGrid />

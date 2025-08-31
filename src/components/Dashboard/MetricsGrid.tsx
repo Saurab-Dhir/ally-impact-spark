@@ -182,17 +182,22 @@ const MetricsGrid = () => {
   }, []);
   return <div className="space-y-6 mx-[25px]">
       <div className="flex items-center justify-between mx-[15px]">
-        <h2 className="text-2xl font-bold text-slate-900">Impact Metrics</h2>
+        <h2 className="text-2xl font-bold text-slate-900">2025 LIVE COUNT</h2>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <TrendingUp className="w-4 h-4" />
-          <span>Updated in real-time</span>
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+          <span>Synced from Google Sheets</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {Object.entries(metrics).map(([key, category]) => <div key={key} className="bg-white rounded-2xl shadow-card overflow-hidden border border-slate-100 hover:shadow-soft transition-all duration-300">
             {/* Category Header */}
-            
+            <div className="px-6 py-4 border-b border-slate-100" style={{ backgroundColor: '#00b7c4' }}>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{category.icon}</span>
+                <h3 className="text-lg font-semibold text-white">{category.title}</h3>
+              </div>
+            </div>
             
             {/* Metrics */}
             <div className="p-6 space-y-4 max-h-96 overflow-y-auto">
