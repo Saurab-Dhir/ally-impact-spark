@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Globe, Settings, Zap, MessageSquare, BarChart3, Database } from 'lucide-react';
+import { Globe, Settings, Zap, MessageSquare, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MetricsGrid from './MetricsGrid';
@@ -14,7 +14,6 @@ import AnimatedCounter from '../Shared/AnimatedCounter';
 import AdminDashboard from '../HQ/AdminDashboard';
 import FileUploader from '../Partners/FileUploader';
 import GoogleSheetsConnector from './GoogleSheetsConnector';
-import DataReconciliation from './DataReconciliation';
 type ViewMode = 'hq' | 'partner';
 const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
@@ -35,14 +34,11 @@ const DashboardLayout = () => {
   }, []);
   return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Glassmorphic Header */}
-      <header 
-        className={cn("glassmorphic-header sticky top-0 z-50 transition-all duration-300", isScrolled && "header-shrink")} 
-        style={{ 
-          background: 'linear-gradient(135deg, #00b7c4 0%, #33c7d0 25%, #00a3b0 50%, #33c7d0 75%, #00b7c4 100%)',
-          backgroundSize: '400% 400%',
-          animation: 'gradient-shift 8s ease infinite'
-        }}
-      >
+      <header className={cn("glassmorphic-header sticky top-0 z-50 transition-all duration-300", isScrolled && "header-shrink")} style={{
+      background: 'linear-gradient(135deg, #00b7c4 0%, #33c7d0 25%, #00a3b0 50%, #33c7d0 75%, #00b7c4 100%)',
+      backgroundSize: '400% 400%',
+      animation: 'gradient-shift 8s ease infinite'
+    }}>
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo and Title */}
           <div className="flex items-center gap-4">
@@ -52,7 +48,7 @@ const DashboardLayout = () => {
               <Globe className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900">
+              <h1 className="text-xl font-bold text-slate-50">
                 Ally Impact Intelligence Hub
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -153,10 +149,6 @@ const DashboardLayout = () => {
               <MessageSquare className="w-4 h-4" />
               Metrics
             </TabsTrigger>
-            <TabsTrigger value="reconciliation" className="flex items-center gap-2">
-              <Database className="w-4 h-4" />
-              Data Reconciliation
-            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="metrics" className="space-y-6">
@@ -173,24 +165,16 @@ const DashboardLayout = () => {
             </div>
             
             {/* Impact Metrics - Full Width */}
-            {isSheetConnected && (
-              <div className="enhanced-card">
+            {isSheetConnected && <div className="enhanced-card">
                 <MetricsGrid />
-              </div>
-            )}
+              </div>}
             
             
             
             {/* Global Impact Map */}
-            {viewMode !== 'partner' && (
-              <div className="enhanced-card">
+            {viewMode !== 'partner' && <div className="enhanced-card">
                 <LiveMap />
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="reconciliation" className="space-y-6">
-            <DataReconciliation />
+              </div>}
           </TabsContent>
         </Tabs>
       </main>
