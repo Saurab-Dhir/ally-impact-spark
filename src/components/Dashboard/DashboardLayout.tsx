@@ -90,54 +90,6 @@ const DashboardLayout = () => {
       
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
-        {/* Animated Hero Section */}
-        <div className="mb-12 relative overflow-hidden rounded-3xl hero-gradient text-white shadow-soft">
-          <FloatingParticles />
-          
-          <div className="relative z-10 p-6 flex flex-col items-center justify-center w-full">
-            <div className="w-full max-w-4xl mx-auto text-center">
-              {/* Hero Content */}
-              <div>
-                <h2 className="text-3xl lg:text-4xl font-bold mb-4 animate-fade-in">
-                  Welcome to the Impact Intelligence Hub
-                </h2>
-                <p style={{
-                animationDelay: '0.2s'
-              }} className="text-white/90 text-lg mb-6 animate-fade-in">
-                  Real-time tracking of anti-trafficking efforts across Nepal, Cambodia, and Canada
-                </p>
-                
-                {/* Animated Metrics */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center animate-scale-in" style={{
-                  animationDelay: '0.4s'
-                }}>
-                    <div className="text-3xl font-bold">
-                      <AnimatedCounter value={3} />
-                    </div>
-                    <div className="text-white/80 text-sm">Active Locations</div>
-                  </div>
-                  <div className="text-center animate-scale-in" style={{
-                  animationDelay: '0.6s'
-                }}>
-                    <div className="text-3xl font-bold">
-                      <AnimatedCounter value={2724} />
-                    </div>
-                    <div className="text-white/80 text-sm">Lives Impacted This Year</div>
-                  </div>
-                  <div className="text-center animate-scale-in" style={{
-                  animationDelay: '0.8s'
-                }}>
-                    <div className="text-3xl font-bold">
-                      <AnimatedCounter value={37000} suffix="+" />
-                    </div>
-                    <div className="text-white/80 text-sm">Lifetime Impact</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Main Tabs */}
         <Tabs defaultValue="metrics" className="w-full">
