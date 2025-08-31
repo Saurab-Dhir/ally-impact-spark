@@ -177,7 +177,7 @@ const FileUploader = () => {
             className="w-full"
             size="lg"
           >
-            Submit for AI Processing
+            Submit to Ally
           </Button>
         </CardContent>
       </Card>
