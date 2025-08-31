@@ -11,6 +11,8 @@ import QuickForms from '../DataCapture/QuickForms';
 import FloatingParticles from '../Shared/FloatingParticles';
 import AnimatedWorldMap from '../Shared/AnimatedWorldMap';
 import AnimatedCounter from '../Shared/AnimatedCounter';
+import AdminDashboard from '../HQ/AdminDashboard';
+import FileUploader from '../Partners/FileUploader';
 type ViewMode = 'hq' | 'partner';
 const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
@@ -149,6 +151,17 @@ const DashboardLayout = () => {
           </TabsList>
           
           <TabsContent value="metrics" className="space-y-6">
+            {/* Show different content based on view mode */}
+            {viewMode === 'hq' ? (
+              /* HQ View - Child Profile Management */
+              <AdminDashboard />
+            ) : (
+              /* Partner View - File Upload System */
+              <FileUploader />
+            )}
+          </TabsContent>
+          
+          <TabsContent value="communications" className="space-y-6">
             {/* Impact Metrics - Full Width */}
             <div className="enhanced-card">
               <MetricsGrid />
@@ -182,27 +195,6 @@ const DashboardLayout = () => {
                   <QuickForms />
                 </div>
               )}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="communications" className="space-y-6">
-            <div className="enhanced-card p-6">
-              <VoiceRecorder />
-            </div>
-            
-            <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 lg:col-span-6 enhanced-card">
-                <RealtimeUpdates />
-              </div>
-              <div className="col-span-12 lg:col-span-6 enhanced-card p-6">
-                <div className="text-center py-12">
-                  <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold mb-2">Communication Center</h3>
-                  <p className="text-muted-foreground">
-                    Manage communications with partners, donors, and field teams.
-                  </p>
-                </div>
-              </div>
             </div>
           </TabsContent>
         </Tabs>
