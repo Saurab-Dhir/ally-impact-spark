@@ -34,7 +34,7 @@ const DashboardLayout = () => {
   }, []);
   return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Glassmorphic Header */}
-      <header className={cn("glassmorphic-header sticky top-0 z-50 transition-all duration-300", isScrolled && "header-shrink")}>
+      <header className={cn("glassmorphic-header sticky top-0 z-50 transition-all duration-300", isScrolled && "header-shrink")} style={{ background: '#00b7c4' }}>
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo and Title */}
           <div className="flex items-center gap-4">
