@@ -119,54 +119,52 @@ const RealtimeUpdates = () => {
             <p className="text-sm">Waiting for updates...</p>
           </div>
         ) : (
-          <div className="p-6 space-y-3">
-            {updates.map((update, index) => (
-              <div
-                key={`${update.id}-${index}`}
-                className={`
-                  p-4 rounded-lg border transition-all duration-300 hover:shadow-sm
-                  ${update.urgent 
-                    ? 'border-red-200 bg-red-50 animate-pulse' 
-                    : getUpdateColor(update.type)
-                  }
-                  ${index === 0 ? 'animate-slide-in-right' : ''}
-                `}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="text-xl flex-shrink-0 mt-0.5">
-                    {getUpdateIcon(update.type)}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <MapPin className="w-3 h-3 opacity-60" />
-                      <span className="text-xs font-medium opacity-80">
-                        {update.location}
+          updates.map((update, index) => (
+            <div
+              key={`${update.id}-${index}`}
+              className={`
+                p-4 rounded-lg border transition-all duration-300 hover:shadow-sm
+                ${update.urgent 
+                  ? 'border-red-200 bg-red-50 animate-pulse' 
+                  : getUpdateColor(update.type)
+                }
+                ${index === 0 ? 'animate-slide-in-right' : ''}
+              `}
+            >
+              <div className="flex items-start gap-3">
+                <div className="text-xl flex-shrink-0 mt-0.5">
+                  {getUpdateIcon(update.type)}
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <MapPin className="w-3 h-3 opacity-60" />
+                    <span className="text-xs font-medium opacity-80">
+                      {update.location}
+                    </span>
+                    <span className="text-xs opacity-60">•</span>
+                    <span className="text-xs opacity-60">{update.time}</span>
+                    {update.urgent && (
+                      <span className="text-xs font-bold bg-red-200 text-red-800 px-2 py-0.5 rounded-full">
+                        URGENT
                       </span>
-                      <span className="text-xs opacity-60">•</span>
-                      <span className="text-xs opacity-60">{update.time}</span>
-                      {update.urgent && (
-                        <span className="text-xs font-bold bg-red-200 text-red-800 px-2 py-0.5 rounded-full">
-                          URGENT
-                        </span>
-                      )}
-                    </div>
-                    
-                    <p className="text-sm font-medium leading-relaxed">
-                      {update.message}
-                    </p>
-                    
-                    {update.count && (
-                      <div className="mt-2 inline-flex items-center gap-1 text-xs font-semibold bg-white/50 px-2 py-1 rounded-full">
-                        <span className="w-1.5 h-1.5 bg-current rounded-full" />
-                        {update.count} people impacted
-                      </div>
                     )}
                   </div>
+                  
+                  <p className="text-sm font-medium leading-relaxed">
+                    {update.message}
+                  </p>
+                  
+                  {update.count && (
+                    <div className="mt-2 inline-flex items-center gap-1 text-xs font-semibold bg-white/50 px-2 py-1 rounded-full">
+                      <span className="w-1.5 h-1.5 bg-current rounded-full" />
+                      {update.count} people impacted
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))
         )}
       </div>
     </div>
