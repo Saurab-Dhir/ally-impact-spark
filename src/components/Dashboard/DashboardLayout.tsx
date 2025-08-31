@@ -163,10 +163,6 @@ const DashboardLayout = () => {
               <MetricsGrid />
             </div>
             
-            {/* Photo Documentation - Full Width - Hidden in HQ view */}
-            {viewMode !== 'hq' && <div className="enhanced-card p-6">
-                <PhotoUploader />
-              </div>}
             
             {/* Live Updates - Full Width - Hidden in Partner view */}
             {viewMode !== 'partner' && <div className="enhanced-card">
