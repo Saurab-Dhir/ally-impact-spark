@@ -1,8 +1,10 @@
-import { X, User, MapPin, Calendar, FileText, Mic, Image, Link, GraduationCap } from 'lucide-react';
+import { X, User, MapPin, Calendar, FileText, Mic, Image, Link, GraduationCap, Presentation } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChildProfile } from '@/types/childProfile';
+import { useState } from 'react';
+import StoryCreationModal from './StoryCreationModal';
 
 interface ProfileDetailModalProps {
   profile: ChildProfile;
@@ -11,6 +13,7 @@ interface ProfileDetailModalProps {
 }
 
 const ProfileDetailModal = ({ profile, open, onClose }: ProfileDetailModalProps) => {
+  const [showStoryModal, setShowStoryModal] = useState(false);
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -47,9 +50,19 @@ const ProfileDetailModal = ({ profile, open, onClose }: ProfileDetailModalProps)
               <DialogTitle className="text-2xl">{profile.name}</DialogTitle>
               <p className="text-muted-foreground">Child Profile Details</p>
             </div>
-            <Badge className={getStatusColor(profile.status)}>
-              {profile.status.replace('_', ' ').toUpperCase()}
-            </Badge>
+            <div className="flex items-center gap-3">
+              <Button 
+                onClick={() => setShowStoryModal(true)}
+                className="bg-primary hover:bg-primary/90"
+                size="sm"
+              >
+                <Presentation className="w-4 h-4 mr-2" />
+                Create Story
+              </Button>
+              <Badge className={getStatusColor(profile.status)}>
+                {profile.status.replace('_', ' ').toUpperCase()}
+              </Badge>
+            </div>
           </div>
         </DialogHeader>
 
@@ -202,6 +215,12 @@ const ProfileDetailModal = ({ profile, open, onClose }: ProfileDetailModalProps)
           </div>
         </div>
       </DialogContent>
+      
+      <StoryCreationModal 
+        profile={profile}
+        open={showStoryModal}
+        onClose={() => setShowStoryModal(false)}
+      />
     </Dialog>
   );
 };
