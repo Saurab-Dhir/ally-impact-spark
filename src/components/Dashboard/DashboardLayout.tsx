@@ -33,10 +33,9 @@ const DashboardLayout = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Animated Header */}
-      <header className={cn("hero-gradient sticky top-0 z-50 transition-all duration-300 relative overflow-hidden", isScrolled && "header-shrink")}>
-        <FloatingParticles />
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between relative z-10">
+      {/* Glassmorphic Header */}
+      <header className={cn("glassmorphic-header sticky top-0 z-50 transition-all duration-300", isScrolled && "header-shrink")}>
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo and Title */}
           <div className="flex items-center gap-4">
             <div className="logo-hover w-10 h-10 rounded-xl flex items-center justify-center shadow-glow" style={{
@@ -45,10 +44,10 @@ const DashboardLayout = () => {
               <Globe className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">
+              <h1 className="text-xl font-bold text-slate-900">
                 Ally Impact Intelligence Hub
               </h1>
-              <p className="text-sm text-white/80">
+              <p className="text-sm text-muted-foreground">
                 Anti-Trafficking Data Platform
               </p>
             </div>
@@ -64,7 +63,7 @@ const DashboardLayout = () => {
           <div className="flex items-center gap-4">
             {/* View Mode Switcher */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-white/80">View as:</span>
+              <span className="text-sm text-muted-foreground">View as:</span>
                <select value={viewMode} onChange={e => setViewMode(e.target.value as ViewMode)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent">
                 <option value="hq">HQ Control Center</option>
                 <option value="partner">Partners</option>
@@ -77,8 +76,8 @@ const DashboardLayout = () => {
               {demoMode ? "Demo Active" : "Start Demo"}
             </button>
 
-            <button className="p-2 rounded-lg hover:bg-white/20 transition-colors">
-              <Settings className="w-5 h-5 text-white/80" />
+            <button className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+              <Settings className="w-5 h-5 text-slate-600" />
             </button>
           </div>
         </div>
