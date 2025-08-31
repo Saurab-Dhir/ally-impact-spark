@@ -67,8 +67,8 @@ const DashboardLayout = () => {
           <div className="flex items-center gap-4">
             {/* View Mode Switcher */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">View as:</span>
-               <select value={viewMode} onChange={e => setViewMode(e.target.value as ViewMode)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent" style={{ color: '#17803d' }}>
+              <span className="text-sm text-slate-100">View as:</span>
+               <select value={viewMode} onChange={e => setViewMode(e.target.value as ViewMode)} className="px-3 py-1.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent">
                 <option value="hq">HQ Control Center</option>
                 <option value="partner">Partners</option>
               </select>
