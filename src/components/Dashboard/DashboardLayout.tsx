@@ -154,10 +154,12 @@ const DashboardLayout = () => {
               <MetricsGrid />
             </div>
             
-            {/* Photo Documentation - Full Width */}
-            <div className="enhanced-card p-6">
-              <PhotoUploader />
-            </div>
+            {/* Photo Documentation - Full Width - Hidden in HQ view */}
+            {viewMode !== 'hq' && (
+              <div className="enhanced-card p-6">
+                <PhotoUploader />
+              </div>
+            )}
             
             {/* Live Updates - Full Width */}
             <div className="enhanced-card">
@@ -169,9 +171,12 @@ const DashboardLayout = () => {
               <div className="col-span-12 lg:col-span-8 enhanced-card">
                 <LiveMap />
               </div>
-              <div className="col-span-12 lg:col-span-4 enhanced-card p-6">
-                <QuickForms />
-              </div>
+              {/* Quick Forms - Hidden in HQ view */}
+              {viewMode !== 'hq' && (
+                <div className="col-span-12 lg:col-span-4 enhanced-card p-6">
+                  <QuickForms />
+                </div>
+              )}
             </div>
           </TabsContent>
           
