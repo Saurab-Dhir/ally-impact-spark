@@ -320,19 +320,19 @@ const DataReconciliation = () => {
       {currentFile ? (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="line-items">Line Items</TabsTrigger>
-            <TabsTrigger value="validation">Validation</TabsTrigger>
-            <TabsTrigger value="cpt-matching">CPT Matching</TabsTrigger>
-            <TabsTrigger value="ncci-edits">NCCI Edits</TabsTrigger>
-            <TabsTrigger value="ucr-pulling">UCR Pulling</TabsTrigger>
-            <TabsTrigger value="excel-report">Excel Report</TabsTrigger>
+            <TabsTrigger value="line-items">Data Records</TabsTrigger>
+            <TabsTrigger value="validation">Data Validation</TabsTrigger>
+            <TabsTrigger value="cpt-matching">Location Matching</TabsTrigger>
+            <TabsTrigger value="ncci-edits">Program Alignment</TabsTrigger>
+            <TabsTrigger value="ucr-pulling">Impact Verification</TabsTrigger>
+            <TabsTrigger value="excel-report">Export Report</TabsTrigger>
           </TabsList>
 
           <TabsContent value="line-items" className="space-y-6">
             {currentData.length > 0 ? (
               <Card>
                 <CardHeader>
-                  <CardTitle>Line Items - {currentFile.name}</CardTitle>
+                  <CardTitle>Data Records - {currentFile.name}</CardTitle>
                   <CardDescription>{currentData.length} records found</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -364,7 +364,7 @@ const DataReconciliation = () => {
               </Card>
             ) : (
               <div className="text-center py-12 text-muted-foreground">
-                No line items to display.
+                No data records to display.
               </div>
             )}
           </TabsContent>
@@ -445,12 +445,12 @@ const DataReconciliation = () => {
           <TabsContent value="cpt-matching" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>CPT Code Matching</CardTitle>
-                <CardDescription>Match and validate CPT codes in your data</CardDescription>
+                <CardTitle>Location Matching</CardTitle>
+                <CardDescription>Match and validate location data across records</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8 text-muted-foreground">
-                  CPT matching functionality coming soon...
+                  Location matching functionality coming soon...
                 </div>
               </CardContent>
             </Card>
@@ -459,12 +459,12 @@ const DataReconciliation = () => {
           <TabsContent value="ncci-edits" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>NCCI Edits</CardTitle>
-                <CardDescription>Apply National Correct Coding Initiative edits</CardDescription>
+                <CardTitle>Program Alignment</CardTitle>
+                <CardDescription>Verify program data alignment and consistency</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8 text-muted-foreground">
-                  NCCI edits functionality coming soon...
+                  Program alignment functionality coming soon...
                 </div>
               </CardContent>
             </Card>
@@ -473,12 +473,12 @@ const DataReconciliation = () => {
           <TabsContent value="ucr-pulling" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>UCR Pulling</CardTitle>
-                <CardDescription>Pull Usual, Customary, and Reasonable rates</CardDescription>
+                <CardTitle>Impact Verification</CardTitle>
+                <CardDescription>Verify and validate impact metrics and outcomes</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8 text-muted-foreground">
-                  UCR pulling functionality coming soon...
+                  Impact verification functionality coming soon...
                 </div>
               </CardContent>
             </Card>
@@ -487,12 +487,12 @@ const DataReconciliation = () => {
           <TabsContent value="excel-report" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Excel Report</CardTitle>
-                <CardDescription>Generate comprehensive Excel reports</CardDescription>
+                <CardTitle>Export Report</CardTitle>
+                <CardDescription>Generate comprehensive data reports for analysis</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center py-8 text-muted-foreground">
-                  Excel report generation coming soon...
+                  Report generation functionality coming soon...
                 </div>
                 <div className="flex justify-center">
                   <Button disabled>
