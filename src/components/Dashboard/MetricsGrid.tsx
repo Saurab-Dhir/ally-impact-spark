@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ArrowUp, ArrowDown, TrendingUp } from 'lucide-react';
 import AnimatedCounter from '../Shared/AnimatedCounter';
+import { ContentCard } from '../ui/content-card';
+import MetricsDialog from './MetricsDialog';
+import preventionHero from '../../assets/prevention-hero.jpg';
+import provideHero from '../../assets/provide-hero.jpg';
+import prepareHero from '../../assets/prepare-hero.jpg';
 interface MetricData {
   nepal?: number;
   cambodia?: number;
@@ -19,6 +24,8 @@ interface Category {
 }
 const MetricsGrid = () => {
   const [animationTrigger, setAnimationTrigger] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Exact data from Ally's spreadsheet
   const metrics: {
@@ -146,30 +153,41 @@ const MetricsGrid = () => {
       }
     }
   };
-  const formatStatName = (key: string): string => {
-    const nameMap: {
-      [key: string]: string;
-    } = {
-      individualsReached: "Individuals Reached",
-      scholarships: "Scholarships Provided",
-      schoolsReached: "Schools Reached",
-      communitiesEngaged: "Communities Engaged",
-      presentations: "Presentations Given",
-      communityLeaders: "Community Leaders",
-      safeSchooling: "Safe Schooling",
-      universityScholarships: "University Scholarships",
-      vocationalTraining: "Vocational Training",
-      traumaInformedCare: "Trauma-Informed Care",
-      safeHomes: "Safe Homes",
-      newSurvivors: "New Survivors",
-      traumaCare: "Trauma Care",
-      totalStaff: "Total Staff",
-      counselling: "Counselling Sessions",
-      financialAssistance: "Financial Assistance",
-      reintegratedFamily: "Family Reintegration",
-      repatriated: "Repatriated"
-    };
-    return nameMap[key] || key;
+
+  const getHeroImage = (key: string) => {
+    switch (key) {
+      case 'prevention':
+        return preventionHero;
+      case 'provide':
+        return provideHero;
+      case 'prepare':
+        return prepareHero;
+      default:
+        return preventionHero;
+    }
+  };
+
+  const getCategoryDescription = (key: string) => {
+    switch (key) {
+      case 'prevention':
+        return 'Protecting children through education, awareness, and community engagement';
+      case 'provide':
+        return 'Providing direct care, support, and rehabilitation services';
+      case 'prepare':
+        return 'Preparing survivors for independent and sustainable futures';
+      default:
+        return '';
+    }
+  };
+
+  const handleCardClick = (category: Category) => {
+    setSelectedCategory(category);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedCategory(null);
   };
 
   // Simulate live updates
@@ -180,7 +198,8 @@ const MetricsGrid = () => {
 
     return () => clearInterval(interval);
   }, []);
-  return <div className="space-y-6 mx-[25px]">
+  return (
+    <div className="space-y-6 mx-[25px]">
       <div className="flex items-center justify-between mx-[15px]">
         <h2 className="text-2xl font-bold text-slate-900">2025 LIVE COUNT</h2>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -190,55 +209,24 @@ const MetricsGrid = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {Object.entries(metrics).map(([key, category]) => <div key={key} className="bg-white rounded-2xl shadow-card overflow-hidden border border-slate-100 hover:shadow-soft transition-all duration-300">
-            {/* Category Header */}
-            <div className="px-6 py-4 border-b border-slate-100" style={{ backgroundColor: '#00b7c4' }}>
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{category.icon}</span>
-                <h3 className="text-lg font-semibold text-white">{category.title}</h3>
-              </div>
-            </div>
-            
-            {/* Metrics */}
-            <div className="p-6 space-y-4 max-h-96 overflow-y-auto">
-              {Object.entries(category.stats).map(([statKey, statValue]) => <div key={statKey} className="group">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
-                      {formatStatName(statKey)}
-                    </span>
-                    {statValue.total > 0 && <ArrowUp className="w-3 h-3 text-green-500" />}
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <AnimatedCounter value={statValue.total || 0} className="text-xl font-bold text-slate-900" key={`${statKey}-${animationTrigger}`} />
-                      {statValue.lifetime && <span className="text-xs text-muted-foreground">
-                          / {statValue.lifetime.toLocaleString()} lifetime
-                        </span>}
-                    </div>
-                  </div>
-
-                  {/* Location breakdown */}
-                  {(statValue.nepal || statValue.cambodia || statValue.makwa) && <div className="mt-2 pt-2 border-t border-slate-100">
-                      <div className="grid grid-cols-3 gap-2 text-xs">
-                        {statValue.nepal !== undefined && <div className="text-center">
-                            <div className="font-medium text-slate-600">{statValue.nepal}</div>
-                            <div className="text-muted-foreground">Nepal</div>
-                          </div>}
-                        {statValue.cambodia !== undefined && <div className="text-center">
-                            <div className="font-medium text-slate-600">{statValue.cambodia}</div>
-                            <div className="text-muted-foreground">Cambodia</div>
-                          </div>}
-                        {statValue.makwa !== undefined && <div className="text-center">
-                            <div className="font-medium text-slate-600">{statValue.makwa}</div>
-                            <div className="text-muted-foreground">Canada</div>
-                          </div>}
-                      </div>
-                    </div>}
-                </div>)}
-            </div>
-          </div>)}
+        {Object.entries(metrics).map(([key, category]) => (
+          <ContentCard
+            key={key}
+            backgroundImage={getHeroImage(key)}
+            title={category.title}
+            description={getCategoryDescription(key)}
+            icon={category.icon}
+            onClick={() => handleCardClick(category)}
+          />
+        ))}
       </div>
-    </div>;
+
+      <MetricsDialog
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        category={selectedCategory}
+      />
+    </div>
+  );
 };
 export default MetricsGrid;
