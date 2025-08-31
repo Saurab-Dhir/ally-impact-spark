@@ -161,19 +161,24 @@ const DashboardLayout = () => {
               </div>
             )}
             
-            {/* Live Updates - Full Width */}
-            <div className="enhanced-card">
-              <RealtimeUpdates />
-            </div>
+            {/* Live Updates - Full Width - Hidden in Partner view */}
+            {viewMode !== 'partner' && (
+              <div className="enhanced-card">
+                <RealtimeUpdates />
+              </div>
+            )}
             
             {/* Secondary Grid */}
             <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 lg:col-span-8 enhanced-card">
-                <LiveMap />
-              </div>
+              {/* Global Impact Map - Hidden in Partner view */}
+              {viewMode !== 'partner' && (
+                <div className="col-span-12 lg:col-span-8 enhanced-card">
+                  <LiveMap />
+                </div>
+              )}
               {/* Quick Forms - Hidden in HQ view */}
               {viewMode !== 'hq' && (
-                <div className="col-span-12 lg:col-span-4 enhanced-card p-6">
+                <div className={`col-span-12 ${viewMode === 'partner' ? 'lg:col-span-12' : 'lg:col-span-4'} enhanced-card p-6`}>
                   <QuickForms />
                 </div>
               )}
