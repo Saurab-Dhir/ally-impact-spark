@@ -87,7 +87,7 @@ const DashboardLayout = () => {
         <div className="mb-12 relative overflow-hidden rounded-3xl hero-gradient text-white shadow-soft">
           <FloatingParticles />
           
-          <div className="relative z-10 p-4 lg:p-6 min-h-fit h-auto">
+          <div className="relative z-10 p-4 lg:p-6 mx-0 px-[25px] py-[25px] my-0">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               {/* Hero Content */}
               <div>
@@ -152,13 +152,9 @@ const DashboardLayout = () => {
           
           <TabsContent value="metrics" className="space-y-6">
             {/* Show different content based on view mode */}
-            {viewMode === 'hq' ? (
-              /* HQ View - Child Profile Management */
-              <AdminDashboard />
-            ) : (
-              /* Partner View - File Upload System */
-              <FileUploader />
-            )}
+            {viewMode === 'hq' ? (/* HQ View - Child Profile Management */
+          <AdminDashboard />) : (/* Partner View - File Upload System */
+          <FileUploader />)}
           </TabsContent>
           
           <TabsContent value="communications" className="space-y-6">
@@ -168,33 +164,25 @@ const DashboardLayout = () => {
             </div>
             
             {/* Photo Documentation - Full Width - Hidden in HQ view */}
-            {viewMode !== 'hq' && (
-              <div className="enhanced-card p-6">
+            {viewMode !== 'hq' && <div className="enhanced-card p-6">
                 <PhotoUploader />
-              </div>
-            )}
+              </div>}
             
             {/* Live Updates - Full Width - Hidden in Partner view */}
-            {viewMode !== 'partner' && (
-              <div className="enhanced-card">
+            {viewMode !== 'partner' && <div className="enhanced-card">
                 <RealtimeUpdates />
-              </div>
-            )}
+              </div>}
             
             {/* Secondary Grid */}
             <div className="grid grid-cols-12 gap-6">
               {/* Global Impact Map - Hidden in Partner view */}
-              {viewMode !== 'partner' && (
-                <div className="col-span-12 lg:col-span-8 enhanced-card">
+              {viewMode !== 'partner' && <div className="col-span-12 lg:col-span-8 enhanced-card">
                   <LiveMap />
-                </div>
-              )}
+                </div>}
               {/* Quick Forms - Hidden in HQ view */}
-              {viewMode !== 'hq' && (
-                <div className={`col-span-12 ${viewMode === 'partner' ? 'lg:col-span-12' : 'lg:col-span-4'} enhanced-card p-6`}>
+              {viewMode !== 'hq' && <div className={`col-span-12 ${viewMode === 'partner' ? 'lg:col-span-12' : 'lg:col-span-4'} enhanced-card p-6`}>
                   <QuickForms />
-                </div>
-              )}
+                </div>}
             </div>
           </TabsContent>
         </Tabs>
