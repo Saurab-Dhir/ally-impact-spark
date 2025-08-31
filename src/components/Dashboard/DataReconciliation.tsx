@@ -40,7 +40,36 @@ const DataReconciliation = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState('line-items');
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [datasetIndex, setDatasetIndex] = useState(0);
   const { toast } = useToast();
+
+  // Three different mock datasets to cycle through
+  const mockDatasets = [
+    // Dataset 1 - Prevention Programs
+    [
+      { id: 1, name: 'Maria Santos', age: 23, location: 'Nepal', program: 'Prevention', headcount: 15, date: '2024-01-15', status: 'Active' },
+      { id: 2, name: 'John Kumar', age: 28, location: 'Cambodia', program: 'Prevention', headcount: 22, date: '2024-02-20', status: 'Completed' },
+      { id: 3, name: 'Lisa Wong', age: 31, location: 'Thailand', program: 'Prevention', headcount: 18, date: '2024-13-25', status: 'Active' }, // Invalid date
+      { id: 4, name: 'Ahmed Hassan', age: 26, location: 'Nepal', program: 'Prevention', headcount: -5, date: '2024-03-10', status: 'Pending' }, // Negative headcount
+      { id: 5, name: 'Elena Rodriguez', age: 29, location: 'Cambodia', program: 'Prevention', headcount: 12, date: '2024-03-15', status: 'Active' }
+    ],
+    // Dataset 2 - Care & Recovery Programs  
+    [
+      { id: 1, name: 'Sarah Johnson', age: 24, location: 'Cambodia', program: 'Provide', headcount: 20, date: '2024-01-18', outcome: 'Rehabilitation' },
+      { id: 2, name: 'Michael Chen', age: 32, location: 'Philippines', program: 'Provide', headcount: 25, date: '2024-02-22', outcome: 'Counseling' },
+      { id: 3, name: 'Ana Silva', age: 19, location: 'Brazil', program: 'Provide', headcount: 12, date: '2024-02-30', outcome: 'Medical Care' }, // Invalid date
+      { id: 4, name: 'David Park', age: 27, location: 'Cambodia', program: 'Provide', headcount: 0, date: '2024-03-15', outcome: 'Legal Aid' }, // Zero headcount
+      { id: 5, name: 'Fatima Al-Zahra', age: 85, location: 'Lebanon', program: 'Provide', headcount: 8, date: '2024-03-20', outcome: 'Shelter' } // Unusual age
+    ],
+    // Dataset 3 - Training & Preparation Programs
+    [
+      { id: 1, name: 'Robert Garcia', age: 34, location: 'Mexico', program: 'Prepare', headcount: 30, date: '2024-01-12', skill: 'Digital Literacy' },
+      { id: 2, name: 'Priya Sharma', age: 22, location: 'India', program: 'Prepare', headcount: 18, date: '2024-02-14', skill: 'Vocational Training' },
+      { id: 3, name: 'James Wilson', age: 45, location: 'Canada', program: 'Prepare', headcount: 25, date: '2024-03-08', skill: 'Language Skills' },
+      { id: 4, name: 'Aisha Kone', age: 12, location: 'Mali', program: 'Prepare', headcount: 15, date: '2024-03-18', skill: 'Basic Education' }, // Unusual age
+      { id: 5, name: 'Carlos Mendez', age: 29, location: 'Guatemala', program: 'Prepare', headcount: -3, date: '2024-04-01', skill: 'Life Skills' } // Negative headcount
+    ]
+  ];
 
   const handleGoogleSheetConnect = () => {
     if (!googleSheetUrl) {
@@ -52,19 +81,15 @@ const DataReconciliation = () => {
       return;
     }
 
-    // Mock data for demo
-    const mockSheetData = [
-      { id: 1, name: 'John Doe', age: 25, location: 'Nepal', program: 'Prevention', headcount: 15, date: '2024-01-15' },
-      { id: 2, name: 'Jane Smith', age: 30, location: 'Cambodia', program: 'Provide', headcount: 22, date: '2024-02-20' },
-      { id: 3, name: 'Bob Johnson', age: 35, location: 'Canada', program: 'Prepare', headcount: 18, date: '2024-13-25' }, // Invalid date
-      { id: 4, name: 'Alice Brown', age: 28, location: 'Nepal', program: 'Prevention', headcount: -5, date: '2024-03-10' }, // Negative headcount
-    ];
+    // Use cycling mock data
+    const currentDataset = mockDatasets[datasetIndex % mockDatasets.length];
+    const datasetNames = ['Prevention Programs', 'Care & Recovery Programs', 'Training & Preparation Programs'];
 
     const newFile: UploadedFile = {
       id: Date.now().toString(),
-      name: 'Google Sheet - ' + new Date().toLocaleDateString(),
+      name: `Google Sheet - ${datasetNames[datasetIndex % datasetNames.length]} (${new Date().toLocaleDateString()})`,
       type: 'google-sheet',
-      data: mockSheetData,
+      data: currentDataset,
       uploadDate: new Date().toISOString()
     };
 
@@ -72,6 +97,7 @@ const DataReconciliation = () => {
     setSelectedFileId(newFile.id);
     setGoogleSheetUrl('');
     setShowUploadDialog(false);
+    setDatasetIndex(prev => prev + 1); // Cycle to next dataset
     
     toast({
       title: "Success",
@@ -83,30 +109,29 @@ const DataReconciliation = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Mock Excel data parsing
-    const mockExcelData = [
-      { id: 1, name: 'Mike Wilson', age: 32, location: 'Cambodia', program: 'Provide', headcount: 20, date: '2024-01-18' },
-      { id: 2, name: 'Sarah Davis', age: 27, location: 'Canada', program: 'Prepare', headcount: 25, date: '2024-02-22' },
-      { id: 3, name: 'Tom Garcia', age: 45, location: 'Nepal', program: 'Prevention', headcount: 12, date: '2024-02-30' }, // Invalid date
-      { id: 4, name: 'Lisa Martinez', age: 29, location: 'Cambodia', program: 'Provide', headcount: 0, date: '2024-03-15' }, // Zero headcount
-    ];
+    // Use cycling mock data
+    const currentDataset = mockDatasets[datasetIndex % mockDatasets.length];
 
     const newFile: UploadedFile = {
       id: Date.now().toString(),
       name: file.name,
       type: 'excel',
-      data: mockExcelData,
+      data: currentDataset,
       uploadDate: new Date().toISOString()
     };
 
     setUploadedFiles(prev => [...prev, newFile]);
     setSelectedFileId(newFile.id);
     setShowUploadDialog(false);
+    setDatasetIndex(prev => prev + 1); // Cycle to next dataset
     
     toast({
       title: "Success",
       description: `Excel file "${file.name}" uploaded successfully`,
     });
+
+    // Reset the file input
+    event.target.value = '';
   };
 
   const removeFile = (fileId: string) => {
