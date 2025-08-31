@@ -20,7 +20,7 @@ interface Location {
 const LiveMap = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState('');
+  const [mapboxToken] = useState('pk.eyJ1Ijoic2F1cmFiMTIzIiwiYSI6ImNtZjAxb2t6ZzE3bzYyam9pbmIybjY5YXcifQ.U1RSou14Vdx_UvxxCWNKgw');
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [pulsingLocations, setPulsingLocations] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -147,53 +147,26 @@ const LiveMap = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-      
-      {/* Mapbox Token Input - Show if no token set */}
-      {!mapboxToken && (
-        <div className="p-6 border-b border-slate-200 bg-blue-50">
-          <div className="flex items-center gap-3 mb-3">
-            <Key className="w-5 h-5 text-blue-600" />
-            <h3 className="font-medium text-blue-900">Mapbox Token Required</h3>
-          </div>
-          <p className="text-sm text-blue-700 mb-4">
-            Enter your Mapbox public token to view the interactive world map. 
-            Get yours at <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
-          </p>
-          <div className="flex gap-2">
-            <Input
-              placeholder="pk.eyJ1IjoieW91ciIsImEiOiJjbGF1c..."
-              value={mapboxToken}
-              onChange={(e) => setMapboxToken(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleTokenSubmit} disabled={!mapboxToken.trim()}>
-              Load Map
-            </Button>
+      <div className="p-6 border-b border-slate-200">
+        <div className="flex items-center gap-3">
+          <MapPin className="w-6 h-6 text-primary" />
+          <div>
+            <h3 className="text-xl font-bold text-slate-900">Global Impact Map</h3>
+            <p className="text-sm text-muted-foreground">Real-time tracking across our partner locations</p>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Interactive Mapbox Map */}
       <div className="relative h-96 overflow-hidden">
-        {mapboxToken ? (
-          <>
-            <div ref={mapContainer} className="absolute inset-0" />
-            
-            {/* Activity feed overlay */}
-            {pulsingLocations.length > 0 && (
-              <div className="absolute top-4 right-4 bg-primary/90 text-white px-4 py-2 rounded-lg shadow-lg animate-slide-in-right z-10">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                  <span className="text-sm font-medium">New activity detected</span>
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full bg-slate-100">
-            <div className="text-center text-slate-500">
-              <MapPin className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p>Enter Mapbox token to view interactive map</p>
+        <div ref={mapContainer} className="absolute inset-0" />
+        
+        {/* Activity feed overlay */}
+        {pulsingLocations.length > 0 && (
+          <div className="absolute top-4 right-4 bg-primary/90 text-white px-4 py-2 rounded-lg shadow-lg animate-slide-in-right z-10">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+              <span className="text-sm font-medium">New activity detected</span>
             </div>
           </div>
         )}
