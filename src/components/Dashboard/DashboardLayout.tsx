@@ -144,9 +144,6 @@ const DashboardLayout = () => {
             <div className="enhanced-card p-6">
               <PhotoUploader />
             </div>
-            <div className="enhanced-card p-6">
-              <QuickForms />
-            </div>
           </div>
           
           {/* Main Metrics */}
@@ -161,6 +158,9 @@ const DashboardLayout = () => {
           
           {/* Updates & Reports */}
           <div className="col-span-12 lg:col-span-3 xl:col-span-3 space-y-6">
+            <div className="enhanced-card p-6">
+              <QuickForms />
+            </div>
             <div className="enhanced-card">
               <RealtimeUpdates />
             </div>
