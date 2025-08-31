@@ -87,7 +87,7 @@ const DashboardLayout = () => {
         <div className="mb-12 relative overflow-hidden rounded-3xl hero-gradient text-white shadow-soft">
           <FloatingParticles />
           
-          <div className="relative z-10 p-8 lg:p-12">
+          <div className="relative z-10 p-4 lg:p-6">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               {/* Hero Content */}
               <div>
