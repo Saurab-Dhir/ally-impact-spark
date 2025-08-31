@@ -140,11 +140,11 @@ const DashboardLayout = () => {
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="metrics" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
-              Metrics
+              Communications
             </TabsTrigger>
             <TabsTrigger value="communications" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
-              Communications
+              Metrics
             </TabsTrigger>
           </TabsList>
           
