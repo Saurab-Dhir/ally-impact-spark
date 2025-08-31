@@ -19,6 +19,7 @@ const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
   const [demoMode, setDemoMode] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSheetConnected, setIsSheetConnected] = useState(false);
   const startDemo = () => {
     setDemoMode(true);
     // Demo sequence for hackathon presentation
@@ -156,13 +157,15 @@ const DashboardLayout = () => {
           <TabsContent value="communications" className="space-y-6">
             {/* Google Sheets Integration */}
             <div className="enhanced-card p-6">
-              <GoogleSheetsConnector />
+              <GoogleSheetsConnector onConnectionChange={setIsSheetConnected} />
             </div>
             
             {/* Impact Metrics - Full Width */}
-            <div className="enhanced-card">
-              <MetricsGrid />
-            </div>
+            {isSheetConnected && (
+              <div className="enhanced-card">
+                <MetricsGrid />
+              </div>
+            )}
             
             
             {/* Live Updates - Full Width - Hidden in Partner view */}

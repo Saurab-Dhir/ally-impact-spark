@@ -4,7 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-const GoogleSheetsConnector = () => {
+interface GoogleSheetsConnectorProps {
+  onConnectionChange?: (connected: boolean) => void;
+}
+
+const GoogleSheetsConnector = ({ onConnectionChange }: GoogleSheetsConnectorProps) => {
   const [sheetUrl, setSheetUrl] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -18,12 +22,14 @@ const GoogleSheetsConnector = () => {
     setTimeout(() => {
       setIsConnected(true);
       setIsConnecting(false);
+      onConnectionChange?.(true);
     }, 2000);
   };
 
   const handleDisconnect = () => {
     setIsConnected(false);
     setSheetUrl('');
+    onConnectionChange?.(false);
   };
 
   return (
