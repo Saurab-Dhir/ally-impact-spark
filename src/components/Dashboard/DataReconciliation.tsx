@@ -316,193 +316,139 @@ const DataReconciliation = () => {
         </Card>
       )}
 
-      {/* Main Content Tabs */}
-      {currentFile ? (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="line-items">Data Records</TabsTrigger>
-            <TabsTrigger value="validation">Data Validation</TabsTrigger>
-            <TabsTrigger value="cpt-matching">Location Matching</TabsTrigger>
-            <TabsTrigger value="ncci-edits">Program Alignment</TabsTrigger>
-            <TabsTrigger value="ucr-pulling">Impact Verification</TabsTrigger>
-            <TabsTrigger value="excel-report">Export Report</TabsTrigger>
+      {/* AI Analysis Controls */}
+      {uploadedFiles.length > 0 && (
+        <div className="mb-6 flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+          <div>
+            <h4 className="text-lg font-semibold">AI Data Analysis</h4>
+            <p className="text-muted-foreground">
+              Run AI-powered validation to identify data quality issues across all files
+            </p>
+          </div>
+          <Button 
+            onClick={runAIInsights}
+            disabled={isAnalyzing || !selectedFileId}
+            className="flex items-center gap-2"
+          >
+            <Brain className="w-4 h-4" />
+            {isAnalyzing ? 'Analyzing...' : 'Run AI Analysis'}
+          </Button>
+        </div>
+      )}
+
+      {/* File Content Tabs */}
+      {uploadedFiles.length > 0 ? (
+        <Tabs value={selectedFileId || uploadedFiles[0]?.id} onValueChange={setSelectedFileId} className="w-full">
+          <TabsList className={`grid w-full ${uploadedFiles.length <= 3 ? `grid-cols-${uploadedFiles.length}` : 'grid-cols-3'}`}>
+            {uploadedFiles.map((file) => (
+              <TabsTrigger key={file.id} value={file.id} className="flex items-center gap-2">
+                {file.type === 'excel' ? <FileSpreadsheet className="w-4 h-4" /> : <Link className="w-4 h-4" />}
+                <span className="truncate max-w-[120px]">{file.name}</span>
+              </TabsTrigger>
+            ))}
           </TabsList>
 
-          <TabsContent value="line-items" className="space-y-6">
-            {currentData.length > 0 ? (
+          {uploadedFiles.map((file) => (
+            <TabsContent key={file.id} value={file.id} className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Data Records - {currentFile.name}</CardTitle>
-                  <CardDescription>{currentData.length} records found</CardDescription>
+                  <CardTitle className="flex items-center gap-2">
+                    {file.type === 'excel' ? <FileSpreadsheet className="w-5 h-5" /> : <Link className="w-5 h-5" />}
+                    {file.name}
+                  </CardTitle>
+                  <CardDescription>{file.data.length} records found</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
-                      <thead>
-                        <tr className="bg-gray-50">
-                          {Object.keys(currentData[0]).map((key) => (
-                            <th key={key} className="border border-gray-300 px-4 py-2 text-left">
-                              {key}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentData.map((row, index) => (
-                          <tr key={index}>
-                            {Object.values(row).map((value, cellIndex) => (
-                              <td key={cellIndex} className="border border-gray-300 px-4 py-2">
-                                {String(value)}
-                              </td>
+                  {file.data.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse border border-gray-300">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            {Object.keys(file.data[0]).map((key) => (
+                              <th key={key} className="border border-gray-300 px-4 py-2 text-left">
+                                {key}
+                              </th>
                             ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {file.data.map((row, index) => (
+                            <tr key={index}>
+                              {Object.values(row).map((value, cellIndex) => (
+                                <td key={cellIndex} className="border border-gray-300 px-4 py-2">
+                                  {String(value)}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                      No data records to display.
+                    </div>
+                  )}
                 </CardContent>
               </Card>
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                No data records to display.
-              </div>
-            )}
-          </TabsContent>
 
-          <TabsContent value="validation" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="text-lg font-semibold">Data Validation</h4>
-                <p className="text-muted-foreground">
-                  AI-powered validation to identify data quality issues
-                </p>
-              </div>
-              <Button 
-                onClick={runAIInsights}
-                disabled={isAnalyzing || currentData.length === 0}
-                className="flex items-center gap-2"
-              >
-                <Brain className="w-4 h-4" />
-                {isAnalyzing ? 'Analyzing...' : 'Run Validation'}
-              </Button>
-            </div>
-
-            <Separator />
-
-            {discrepancies.length > 0 ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Badge variant="outline">{discrepancies.length} Issues Found</Badge>
-                  <Badge variant="destructive">
-                    {discrepancies.filter(d => d.severity === 'high').length} High Priority
-                  </Badge>
-                  <Badge variant="default">
-                    {discrepancies.filter(d => d.severity === 'medium').length} Medium Priority
-                  </Badge>
-                  <Badge variant="secondary">
-                    {discrepancies.filter(d => d.severity === 'low').length} Low Priority
-                  </Badge>
-                </div>
-
-                <div className="space-y-3">
-                  {discrepancies.map((discrepancy, index) => (
-                    <Alert key={index}>
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertTitle className="flex items-center gap-2">
-                        Row {discrepancy.row} - {discrepancy.column}
-                        <Badge variant={getSeverityColor(discrepancy.severity)}>
-                          {discrepancy.severity}
+              {/* AI Analysis Results for this file */}
+              {selectedFileId === file.id && discrepancies.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>AI Analysis Results</CardTitle>
+                    <CardDescription>Data quality issues found in {file.name}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <Badge variant="outline">{discrepancies.length} Issues Found</Badge>
+                        <Badge variant="destructive">
+                          {discrepancies.filter(d => d.severity === 'high').length} High Priority
                         </Badge>
-                      </AlertTitle>
-                      <AlertDescription>
-                        <p>{discrepancy.issue}</p>
-                        {discrepancy.suggestion && (
-                          <p className="mt-1 text-blue-600">
-                            <strong>Suggestion:</strong> {discrepancy.suggestion}
-                          </p>
-                        )}
-                      </AlertDescription>
-                    </Alert>
-                  ))}
-                </div>
-              </div>
-            ) : isAnalyzing ? (
-              <div className="text-center py-8">
-                <Brain className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-                <p className="text-muted-foreground">Analyzing data for discrepancies...</p>
-              </div>
-            ) : (
-              <Alert>
-                <CheckCircle className="h-4 w-4" />
-                <AlertTitle>Ready for Validation</AlertTitle>
-                <AlertDescription>
-                  Click "Run Validation" to scan your data for potential issues and discrepancies.
-                </AlertDescription>
-              </Alert>
-            )}
-          </TabsContent>
+                        <Badge variant="default">
+                          {discrepancies.filter(d => d.severity === 'medium').length} Medium Priority
+                        </Badge>
+                        <Badge variant="secondary">
+                          {discrepancies.filter(d => d.severity === 'low').length} Low Priority
+                        </Badge>
+                      </div>
 
-          <TabsContent value="cpt-matching" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Location Matching</CardTitle>
-                <CardDescription>Match and validate location data across records</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  Location matching functionality coming soon...
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                      <div className="space-y-3">
+                        {discrepancies.map((discrepancy, index) => (
+                          <Alert key={index}>
+                            <AlertTriangle className="h-4 w-4" />
+                            <AlertTitle className="flex items-center gap-2">
+                              Row {discrepancy.row} - {discrepancy.column}
+                              <Badge variant={getSeverityColor(discrepancy.severity)}>
+                                {discrepancy.severity}
+                              </Badge>
+                            </AlertTitle>
+                            <AlertDescription>
+                              <p>{discrepancy.issue}</p>
+                              {discrepancy.suggestion && (
+                                <p className="mt-1 text-blue-600">
+                                  <strong>Suggestion:</strong> {discrepancy.suggestion}
+                                </p>
+                              )}
+                            </AlertDescription>
+                          </Alert>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-          <TabsContent value="ncci-edits" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Program Alignment</CardTitle>
-                <CardDescription>Verify program data alignment and consistency</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  Program alignment functionality coming soon...
+              {/* Analysis Status */}
+              {selectedFileId === file.id && isAnalyzing && (
+                <div className="text-center py-8">
+                  <Brain className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+                  <p className="text-muted-foreground">Analyzing data for discrepancies...</p>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="ucr-pulling" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Impact Verification</CardTitle>
-                <CardDescription>Verify and validate impact metrics and outcomes</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  Impact verification functionality coming soon...
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="excel-report" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Export Report</CardTitle>
-                <CardDescription>Generate comprehensive data reports for analysis</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center py-8 text-muted-foreground">
-                  Report generation functionality coming soon...
-                </div>
-                <div className="flex justify-center">
-                  <Button disabled>
-                    <FileSpreadsheet className="w-4 h-4 mr-2" />
-                    Generate Report
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              )}
+            </TabsContent>
+          ))}
         </Tabs>
       ) : (
         <Alert>
