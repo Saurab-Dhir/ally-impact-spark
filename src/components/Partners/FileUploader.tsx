@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Upload, FileText, Mic, Link, Image, Plus } from 'lucide-react';
+import { Upload, FileText, Mic, Link, Image, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import ReviewDialog from './ReviewDialog';
 
 interface UploadedFile {
   id: string;
@@ -18,6 +19,8 @@ const FileUploader = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [googleDriveLink, setGoogleDriveLink] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showReviewDialog, setShowReviewDialog] = useState(false);
   const { toast } = useToast();
 
   const handleFileUpload = (type: 'pdf' | 'voice' | 'photo') => {
@@ -65,9 +68,19 @@ const FileUploader = () => {
       return;
     }
 
+    setIsProcessing(true);
+
+    // Simulate processing time then open review dialog
+    setTimeout(() => {
+      setIsProcessing(false);
+      setShowReviewDialog(true);
+    }, 1000);
+  };
+
+  const handleReviewSave = (flaggedItems: any[]) => {
     toast({
-      title: "Submitted for processing",
-      description: "Files sent to AI processing. Child profile will be created automatically.",
+      title: "Profile created successfully",
+      description: "Child profile has been created and sent to HQ for approval.",
     });
 
     // Reset form
@@ -176,11 +189,26 @@ const FileUploader = () => {
             onClick={submitForProcessing}
             className="w-full"
             size="lg"
+            disabled={isProcessing}
           >
-            Submit to Ally
+            {isProcessing ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              'Submit to Ally'
+            )}
           </Button>
         </CardContent>
       </Card>
+
+      {/* Review Dialog */}
+      <ReviewDialog 
+        open={showReviewDialog}
+        onClose={() => setShowReviewDialog(false)}
+        onSave={handleReviewSave}
+      />
 
       {/* Processing Info */}
       <Card>
