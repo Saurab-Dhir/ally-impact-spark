@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, TrendingUp } from 'lucide-react';
-import AnimatedCounter from '../Shared/AnimatedCounter';
+import { TrendingUp } from 'lucide-react';
+import MetricCard from './MetricCard';
+import { Skeleton } from '@/components/ui/skeleton';
 interface MetricData {
   nepal?: number;
   cambodia?: number;
@@ -19,6 +20,8 @@ interface Category {
 }
 const MetricsGrid = () => {
   const [animationTrigger, setAnimationTrigger] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [celebrateMetrics, setCelebrateMetrics] = useState<Set<string>>(new Set());
 
   // Exact data from Ally's spreadsheet
   const metrics: {
@@ -172,68 +175,111 @@ const MetricsGrid = () => {
     return nameMap[key] || key;
   };
 
-  // Simulate live updates
+  // Simulate loading and live updates
   useEffect(() => {
+    // Initial loading
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    // Live updates with celebration detection  
     const interval = setInterval(() => {
       setAnimationTrigger(prev => prev + 1);
-    }, 15000); // Update every 15 seconds
+      
+      // Randomly trigger celebrations for demo
+      if (Math.random() > 0.8) {
+        const categories = Object.keys(metrics);
+        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+        const stats = Object.keys(metrics[randomCategory].stats);
+        const randomStat = stats[Math.floor(Math.random() * stats.length)];
+        const metricKey = `${randomCategory}-${randomStat}`;
+        
+        setCelebrateMetrics(prev => new Set([...prev, metricKey]));
+        
+        // Clear celebration after 3 seconds
+        setTimeout(() => {
+          setCelebrateMetrics(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(metricKey);
+            return newSet;
+          });
+        }, 3000);
+      }
+    }, 15000);
 
-    return () => clearInterval(interval);
-  }, []);
-  return <div className="space-y-6 mx-[25px]">
+    return () => {
+      clearTimeout(loadingTimer);
+      clearInterval(interval);
+    };
+  }, [metrics]);
+  if (isLoading) {
+    return (
+      <div className="space-y-6 mx-[25px]">
+        <div className="flex items-center justify-between mx-[15px]">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-6 w-32" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="space-y-4">
+              {[...Array(6)].map((_, j) => (
+                <Skeleton key={j} className="h-[180px] w-full rounded-2xl" />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 mx-[25px]">
       <div className="flex items-center justify-between mx-[15px]">
-        <h2 className="text-2xl font-bold text-slate-900">Impact Metrics</h2>
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+          Impact Metrics
+        </h2>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <TrendingUp className="w-4 h-4" />
-          <span>Updated in real-time</span>
+          <TrendingUp className="w-4 h-4 animate-pulse" />
+          <span>Live Dashboard</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {Object.entries(metrics).map(([key, category]) => <div key={key} className="bg-white rounded-2xl shadow-card overflow-hidden border border-slate-100 hover:shadow-soft transition-all duration-300">
-            {/* Category Header */}
-            
-            
-            {/* Metrics */}
-            <div className="p-6 space-y-4 max-h-96 overflow-y-auto">
-              {Object.entries(category.stats).map(([statKey, statValue]) => <div key={statKey} className="group">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
-                      {formatStatName(statKey)}
-                    </span>
-                    {statValue.total > 0 && <ArrowUp className="w-3 h-3 text-green-500" />}
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <AnimatedCounter value={statValue.total || 0} className="text-xl font-bold text-slate-900" key={`${statKey}-${animationTrigger}`} />
-                      {statValue.lifetime && <span className="text-xs text-muted-foreground">
-                          / {statValue.lifetime.toLocaleString()} lifetime
-                        </span>}
-                    </div>
-                  </div>
-
-                  {/* Location breakdown */}
-                  {(statValue.nepal || statValue.cambodia || statValue.makwa) && <div className="mt-2 pt-2 border-t border-slate-100">
-                      <div className="grid grid-cols-3 gap-2 text-xs">
-                        {statValue.nepal !== undefined && <div className="text-center">
-                            <div className="font-medium text-slate-600">{statValue.nepal}</div>
-                            <div className="text-muted-foreground">Nepal</div>
-                          </div>}
-                        {statValue.cambodia !== undefined && <div className="text-center">
-                            <div className="font-medium text-slate-600">{statValue.cambodia}</div>
-                            <div className="text-muted-foreground">Cambodia</div>
-                          </div>}
-                        {statValue.makwa !== undefined && <div className="text-center">
-                            <div className="font-medium text-slate-600">{statValue.makwa}</div>
-                            <div className="text-muted-foreground">Canada</div>
-                          </div>}
-                      </div>
-                    </div>}
-                </div>)}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {Object.entries(metrics).map(([categoryKey, category]) => (
+          <div key={categoryKey} className="space-y-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className={`p-2 rounded-lg ${
+                categoryKey === 'prevention' ? 'bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED]' :
+                categoryKey === 'provide' ? 'bg-gradient-to-r from-[#14B8A6] to-[#0D9488]' :
+                'bg-gradient-to-r from-[#FB923C] to-[#EA580C]'
+              }`}>
+                <span className="text-white text-lg">{category.icon}</span>
+              </div>
+              <h3 className="text-xl font-semibold text-slate-800">{category.title}</h3>
             </div>
-          </div>)}
+            
+            <div className="space-y-4">
+              {Object.entries(category.stats).map(([statKey, statValue]) => {
+                const metricKey = `${categoryKey}-${statKey}`;
+                const shouldCelebrate = celebrateMetrics.has(metricKey);
+                
+                return (
+                  <MetricCard
+                    key={`${statKey}-${animationTrigger}`}
+                    title={formatStatName(statKey)}
+                    value={statValue}
+                    category={category.color}
+                    isNew={animationTrigger === 0}
+                    showCelebration={shouldCelebrate}
+                    className="hover:scale-[1.02] transition-transform duration-200"
+                  />
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
-    </div>;
+    </div>
+  );
 };
 export default MetricsGrid;
