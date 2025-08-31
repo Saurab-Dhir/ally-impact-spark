@@ -168,10 +168,6 @@ const DashboardLayout = () => {
             )}
             
             
-            {/* Live Updates - Full Width - Hidden in Partner view */}
-            {viewMode !== 'partner' && <div className="enhanced-card">
-                <RealtimeUpdates />
-              </div>}
             
             {/* Global Impact Map */}
             {viewMode !== 'partner' && (
