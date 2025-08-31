@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Calendar, MapPin, User, AlertTriangle, CheckCircle, Clock, FileX } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChildProfile } from '@/types/childProfile';
+import ProfileDetailModal from './ProfileDetailModal';
+import DataReconciliationModal from './DataReconciliationModal';
 
 interface ProfileCardProps {
   profile: ChildProfile;
@@ -12,6 +15,9 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = ({ profile, onApprove, onRequestData, onViewDetails }: ProfileCardProps) => {
+  const [showProfileDetail, setShowProfileDetail] = useState(false);
+  const [showDataReconciliation, setShowDataReconciliation] = useState(false);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -114,11 +120,12 @@ const ProfileCard = ({ profile, onApprove, onRequestData, onViewDetails }: Profi
           </div>
         )}
 
-        <div className="flex gap-2 pt-2">
+        <div className="flex flex-col sm:flex-row gap-2 pt-2">
           <Button
             size="sm"
             variant="outline"
-            onClick={() => onViewDetails?.(profile.id)}
+            onClick={() => setShowProfileDetail(true)}
+            className="flex-1 sm:flex-none"
           >
             View Details
           </Button>
@@ -127,6 +134,7 @@ const ProfileCard = ({ profile, onApprove, onRequestData, onViewDetails }: Profi
             <Button
               size="sm"
               onClick={() => onApprove?.(profile.id)}
+              className="flex-1 sm:flex-none bg-primary hover:bg-primary/90"
             >
               Approve
             </Button>
@@ -136,12 +144,30 @@ const ProfileCard = ({ profile, onApprove, onRequestData, onViewDetails }: Profi
             <Button
               size="sm"
               variant="destructive"
-              onClick={() => onRequestData?.(profile.id)}
+              onClick={() => setShowDataReconciliation(true)}
+              className="flex-1 sm:flex-none"
             >
               Request Data
             </Button>
           )}
         </div>
+
+        {/* Modals */}
+        <ProfileDetailModal
+          profile={profile}
+          open={showProfileDetail}
+          onClose={() => setShowProfileDetail(false)}
+        />
+        
+        <DataReconciliationModal
+          profile={profile}
+          open={showDataReconciliation}
+          onClose={() => setShowDataReconciliation(false)}
+          onDataRequested={(id) => {
+            onRequestData?.(id);
+            setShowDataReconciliation(false);
+          }}
+        />
       </CardContent>
     </Card>
   );
