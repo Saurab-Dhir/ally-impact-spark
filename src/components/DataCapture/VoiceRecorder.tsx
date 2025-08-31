@@ -110,14 +110,17 @@ const VoiceRecorder = () => {
         <button
           onClick={handleStartRecording}
           disabled={isRecording || isProcessing}
-          className={cn(
-            "relative w-24 h-24 rounded-full transition-all duration-300 shadow-glow",
-            isRecording 
-              ? "bg-red-500 scale-110 animate-recording-pulse" 
-              : "bg-primary hover:bg-primary/90 hover:scale-105",
-            isProcessing && "bg-warning animate-spin",
-            (isRecording || isProcessing) && "cursor-not-allowed"
-          )}
+            className={cn(
+              "relative w-24 h-24 rounded-full transition-all duration-300 shadow-glow",
+              isRecording 
+                ? "bg-red-500 scale-110 animate-recording-pulse" 
+                : "hover:scale-105",
+              isProcessing && "bg-warning animate-spin",
+              (isRecording || isProcessing) && "cursor-not-allowed"
+            )}
+            style={{
+              backgroundColor: !isRecording && !isProcessing ? '#00b7c4' : undefined,
+            }}
         >
           {isProcessing ? (
             <Loader className="w-8 h-8 text-white absolute inset-0 m-auto" />
