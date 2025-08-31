@@ -18,15 +18,9 @@ const locations: Location[] = [{
   name: 'Cambodia'
 }];
 const AnimatedWorldMap = () => {
-  const svgRef = useRef<SVGSVGElement>(null);
-  
   return (
     <div className="w-64 h-40 relative">
-      <svg
-        ref={svgRef}
-        viewBox="0 0 100 60"
-        className="w-full h-full"
-      >
+      <svg viewBox="0 0 100 60" className="w-full h-full">
         {/* Simple world map outline */}
         <path
           d="M10,25 Q15,20 25,25 Q35,30 45,25 Q55,20 65,25 Q75,30 85,25 Q90,20 95,25"
