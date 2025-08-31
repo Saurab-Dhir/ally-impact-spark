@@ -2,41 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Ally Impact Intelligence Hub Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 218 25% 97%;
+    --foreground: 224 20% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 20% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 20% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Ally Brand Colors */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 217 91% 70%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 224 20% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 215 28% 94%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Impact Categories */
+    --prevention: 261 73% 55%;
+    --prevention-light: 261 73% 90%;
+    --provide: 168 76% 42%;
+    --provide-light: 168 76% 90%;
+    --prepare: 25 95% 53%;
+    --prepare-light: 25 95% 90%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --gradient-prevention: linear-gradient(135deg, hsl(var(--prevention)), hsl(261 73% 65%));
+    --gradient-provide: linear-gradient(135deg, hsl(var(--provide)), hsl(168 76% 52%));
+    --gradient-prepare: linear-gradient(135deg, hsl(var(--prepare)), hsl(25 95% 63%));
+
+    /* Shadows */
+    --shadow-soft: 0 2px 15px -3px hsl(var(--primary) / 0.07), 0 10px 20px -2px hsl(var(--primary) / 0.04);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.15);
+    --shadow-card: 0 1px 3px 0 hsl(var(--foreground) / 0.1), 0 1px 2px 0 hsl(var(--foreground) / 0.06);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
@@ -91,7 +120,6 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-  }
 }
 
 @layer base {
@@ -101,5 +129,140 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Impact Category Cards */
+  .impact-card-prevention {
+    @apply bg-gradient-to-br from-[hsl(var(--prevention))] to-[hsl(261_73%_65%)] text-white;
+  }
+  
+  .impact-card-provide {
+    @apply bg-gradient-to-br from-[hsl(var(--provide))] to-[hsl(168_76%_52%)] text-white;
+  }
+  
+  .impact-card-prepare {
+    @apply bg-gradient-to-br from-[hsl(var(--prepare))] to-[hsl(25_95%_63%)] text-white;
+  }
+
+  /* Recording Button */
+  .recording-pulse {
+    animation: recording-pulse 1.5s ease-in-out infinite;
+  }
+
+  /* Live Indicator */
+  .live-pulse {
+    @apply bg-green-500 animate-pulse;
+  }
+
+  /* Map Pulse Animation */
+  .map-pulse {
+    animation: map-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Face Blur Effect */
+  .face-blur {
+    filter: blur(8px);
+    transition: filter 0.3s ease;
+  }
+}
+
+@layer utilities {
+  .animate-counter {
+    animation: counter-up 2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+}
+
+/* Keyframe Animations */
+@keyframes recording-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes map-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  to {
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.6);
+  }
+}
+
+@keyframes counter-up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }
