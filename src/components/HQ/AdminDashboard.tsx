@@ -23,8 +23,8 @@ const AdminDashboard = () => {
         : profile
     ));
     toast({
-      title: "Profile approved",
-      description: "Child profile has been approved and is now active in the system.",
+      title: "Profile activated",
+      description: "Child profile has been activated and is now active in the system.",
     });
   };
 
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
               <CheckCircle className="w-8 h-8 text-green-600" />
               <div>
                 <p className="text-2xl font-bold">{getStatusCount('approved')}</p>
-                <p className="text-sm text-muted-foreground">Approved</p>
+                <p className="text-sm text-muted-foreground">Active</p>
               </div>
             </div>
           </CardContent>
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
           </TabsTrigger>
           <TabsTrigger value="approved" className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4" />
-            Approved ({approvedProfiles.length})
+            Active ({approvedProfiles.length})
           </TabsTrigger>
         </TabsList>
 
@@ -205,8 +205,8 @@ const AdminDashboard = () => {
           {approvedProfiles.length === 0 && (
             <div className="text-center py-12">
               <CheckCircle className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-xl font-semibold mb-2">No Approved Profiles</h3>
-              <p className="text-muted-foreground">Start approving pending profiles to see them here.</p>
+              <h3 className="text-xl font-semibold mb-2">No Active Profiles</h3>
+              <p className="text-muted-foreground">Start activating pending profiles to see them here.</p>
             </div>
           )}
         </TabsContent>
