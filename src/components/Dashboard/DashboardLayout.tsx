@@ -88,15 +88,15 @@ const DashboardLayout = () => {
           <FloatingParticles />
           
           <div className="relative z-10 p-6 flex flex-col items-center justify-center w-full">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
+            <div className="w-full max-w-4xl mx-auto text-center">
               {/* Hero Content */}
               <div>
-                <h2 className="text-3xl lg:text-4xl font-bold mb-4 animate-fade-in text-center">
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4 animate-fade-in">
                   Welcome to the Impact Intelligence Hub
                 </h2>
                 <p style={{
                 animationDelay: '0.2s'
-              }} className="text-white/90 text-lg mb-6 animate-fade-in text-center">
+              }} className="text-white/90 text-lg mb-6 animate-fade-in">
                   Real-time tracking of anti-trafficking efforts across Nepal, Cambodia, and Canada
                 </p>
                 
@@ -127,11 +127,6 @@ const DashboardLayout = () => {
                     <div className="text-white/80 text-sm">Lifetime Impact</div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Animated World Map */}
-              <div className="flex justify-center lg:justify-end">
-                
               </div>
             </div>
           </div>
