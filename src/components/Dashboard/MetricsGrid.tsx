@@ -199,7 +199,7 @@ const MetricsGrid = () => {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="space-y-6 mx-[25px]">
+    <div className="space-y-6 mx-[25px] py-8">
       <div className="flex items-center justify-between mx-[15px]">
         <h2 className="text-2xl font-bold text-slate-900">2025 LIVE COUNT</h2>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
