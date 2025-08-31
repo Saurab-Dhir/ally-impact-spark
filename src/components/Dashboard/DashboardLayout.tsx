@@ -91,12 +91,12 @@ const DashboardLayout = () => {
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               {/* Hero Content */}
               <div>
-                <h2 className="text-3xl lg:text-4xl font-bold mb-4 animate-fade-in">
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4 animate-fade-in text-center">
                   Welcome to the Impact Intelligence Hub
                 </h2>
-                <p className="text-white/90 text-lg mb-6 animate-fade-in" style={{
+                <p style={{
                 animationDelay: '0.2s'
-              }}>
+              }} className="text-white/90 text-lg mb-6 animate-fade-in text-center">
                   Real-time tracking of anti-trafficking efforts across Nepal, Cambodia, and Canada
                 </p>
                 
