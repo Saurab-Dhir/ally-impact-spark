@@ -66,15 +66,6 @@ const LiveMap = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-card border border-slate-100 overflow-hidden">
-      <div className="p-6 border-b border-slate-100">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-slate-900">Global Impact Map</h3>
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-green-500" />
-            <span className="text-sm font-medium text-green-600">Live Updates</span>
-          </div>
-        </div>
-      </div>
       
       {/* Simplified map visualization */}
       <div className="relative h-96 bg-gradient-to-br from-blue-50 to-slate-100 overflow-hidden">
