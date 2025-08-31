@@ -111,15 +111,6 @@ const RealtimeUpdates = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-card border border-slate-100">
-      <div className="p-6 border-b border-slate-100">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-slate-900">Live Updates</h3>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-green-600">Real-time</span>
-          </div>
-        </div>
-      </div>
       
       <div className="max-h-96 overflow-y-auto">
         {updates.length === 0 ? (
