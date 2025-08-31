@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, Link, FileSpreadsheet, AlertTriangle, CheckCircle, Brain } from 'lucide-react';
+import { Upload, Link, FileSpreadsheet, AlertTriangle, CheckCircle, Brain, ChevronDown, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 
 interface DataRow {
@@ -23,13 +24,22 @@ interface Discrepancy {
   suggestion?: string;
 }
 
+interface UploadedFile {
+  id: string;
+  name: string;
+  type: 'excel' | 'google-sheet';
+  data: DataRow[];
+  uploadDate: string;
+}
+
 const DataReconciliation = () => {
   const [googleSheetUrl, setGoogleSheetUrl] = useState('');
-  const [excelData, setExcelData] = useState<DataRow[]>([]);
-  const [sheetData, setSheetData] = useState<DataRow[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [selectedFileId, setSelectedFileId] = useState<string>('');
   const [discrepancies, setDiscrepancies] = useState<Discrepancy[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [activeTab, setActiveTab] = useState('upload');
+  const [activeTab, setActiveTab] = useState('line-items');
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
   const { toast } = useToast();
 
   const handleGoogleSheetConnect = () => {
@@ -50,7 +60,19 @@ const DataReconciliation = () => {
       { id: 4, name: 'Alice Brown', age: 28, location: 'Nepal', program: 'Prevention', headcount: -5, date: '2024-03-10' }, // Negative headcount
     ];
 
-    setSheetData(mockSheetData);
+    const newFile: UploadedFile = {
+      id: Date.now().toString(),
+      name: 'Google Sheet - ' + new Date().toLocaleDateString(),
+      type: 'google-sheet',
+      data: mockSheetData,
+      uploadDate: new Date().toISOString()
+    };
+
+    setUploadedFiles(prev => [...prev, newFile]);
+    setSelectedFileId(newFile.id);
+    setGoogleSheetUrl('');
+    setShowUploadDialog(false);
+    
     toast({
       title: "Success",
       description: "Google Sheet connected successfully",
@@ -69,22 +91,48 @@ const DataReconciliation = () => {
       { id: 4, name: 'Lisa Martinez', age: 29, location: 'Cambodia', program: 'Provide', headcount: 0, date: '2024-03-15' }, // Zero headcount
     ];
 
-    setExcelData(mockExcelData);
+    const newFile: UploadedFile = {
+      id: Date.now().toString(),
+      name: file.name,
+      type: 'excel',
+      data: mockExcelData,
+      uploadDate: new Date().toISOString()
+    };
+
+    setUploadedFiles(prev => [...prev, newFile]);
+    setSelectedFileId(newFile.id);
+    setShowUploadDialog(false);
+    
     toast({
       title: "Success",
       description: `Excel file "${file.name}" uploaded successfully`,
     });
   };
 
+  const removeFile = (fileId: string) => {
+    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
+    if (selectedFileId === fileId) {
+      setSelectedFileId(uploadedFiles.length > 1 ? uploadedFiles.filter(f => f.id !== fileId)[0].id : '');
+    }
+  };
+
+  const getCurrentFileData = () => {
+    const currentFile = uploadedFiles.find(f => f.id === selectedFileId);
+    return currentFile?.data || [];
+  };
+
   const runAIInsights = () => {
+    const currentData = getCurrentFileData();
+    if (currentData.length === 0) return;
+    
     setIsAnalyzing(true);
     
     // Simulate AI analysis
     setTimeout(() => {
       const foundDiscrepancies: Discrepancy[] = [];
       
-      // Analyze sheet data
-      sheetData.forEach((row, index) => {
+      // Analyze current file data
+      currentData.forEach((row, index) => {
         // Check for invalid dates
         if (row.date && !isValidDate(row.date)) {
           foundDiscrepancies.push({
@@ -115,29 +163,6 @@ const DataReconciliation = () => {
             issue: `Unusual age: ${row.age}`,
             severity: 'low',
             suggestion: 'Verify age is correct'
-          });
-        }
-      });
-      
-      // Analyze excel data
-      excelData.forEach((row, index) => {
-        if (row.date && !isValidDate(row.date)) {
-          foundDiscrepancies.push({
-            row: index + 1,
-            column: 'date',
-            issue: `Invalid date format: ${row.date} (Excel)`,
-            severity: 'high',
-            suggestion: 'Use YYYY-MM-DD format'
-          });
-        }
-        
-        if (row.headcount <= 0) {
-          foundDiscrepancies.push({
-            row: index + 1,
-            column: 'headcount',
-            issue: `Invalid headcount: ${row.headcount} (Excel)`,
-            severity: row.headcount < 0 ? 'high' : 'medium',
-            suggestion: 'Headcount should be a positive number'
           });
         }
       });
@@ -173,36 +198,89 @@ const DataReconciliation = () => {
     }
   };
 
+  const currentFile = uploadedFiles.find(f => f.id === selectedFileId);
+  const currentData = getCurrentFileData();
+
   return (
     <div className="enhanced-card p-6">
       <div className="mb-6">
         <h3 className="text-2xl font-bold text-slate-900 mb-2">Data Reconciliation</h3>
         <p className="text-muted-foreground">
-          Connect Google Sheets or upload Excel files to analyze data quality and identify discrepancies
+          Upload and analyze multiple Excel files and Google Sheets for data quality and discrepancies
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="upload">Data Sources</TabsTrigger>
-          <TabsTrigger value="preview">Data Preview</TabsTrigger>
-          <TabsTrigger value="insights">AI Insights</TabsTrigger>
-        </TabsList>
+      {/* File Management Header */}
+      <div className="mb-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {uploadedFiles.length > 0 ? (
+              <Select value={selectedFileId} onValueChange={setSelectedFileId}>
+                <SelectTrigger className="w-80">
+                  <SelectValue placeholder="Select a file to work with" />
+                </SelectTrigger>
+                <SelectContent>
+                  {uploadedFiles.map((file) => (
+                    <SelectItem key={file.id} value={file.id}>
+                      <div className="flex items-center gap-2">
+                        {file.type === 'excel' ? <FileSpreadsheet className="w-4 h-4" /> : <Link className="w-4 h-4" />}
+                        <span>{file.name}</span>
+                        <Badge variant="outline" className="ml-2">{file.data.length} rows</Badge>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <div className="text-muted-foreground">No files uploaded yet</div>
+            )}
+          </div>
+          <Button onClick={() => setShowUploadDialog(true)} size="sm" className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Add File
+          </Button>
+        </div>
 
-        <TabsContent value="upload" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Google Sheets Connection */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+        {/* Uploaded Files List */}
+        {uploadedFiles.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {uploadedFiles.map((file) => (
+              <Badge key={file.id} variant={file.id === selectedFileId ? "default" : "secondary"} className="flex items-center gap-2 px-3 py-1">
+                {file.type === 'excel' ? <FileSpreadsheet className="w-3 h-3" /> : <Link className="w-3 h-3" />}
+                {file.name}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto p-0 ml-1 hover:bg-transparent"
+                  onClick={() => removeFile(file.id)}
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              </Badge>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Upload Dialog */}
+      {showUploadDialog && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Upload New File
+              <Button variant="ghost" size="sm" onClick={() => setShowUploadDialog(false)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Google Sheets Connection */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
                   <Link className="w-5 h-5" />
-                  Google Sheets
-                </CardTitle>
-                <CardDescription>
-                  Connect to a Google Sheets document
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                  <Label className="text-base font-medium">Google Sheets</Label>
+                </div>
                 <div>
                   <Label htmlFor="sheet-url">Google Sheets URL</Label>
                   <Input
@@ -215,29 +293,16 @@ const DataReconciliation = () => {
                 <Button onClick={handleGoogleSheetConnect} className="w-full">
                   Connect Sheet
                 </Button>
-                {sheetData.length > 0 && (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <CheckCircle className="w-4 h-4" />
-                    <span className="text-sm">Connected ({sheetData.length} rows)</span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Excel Upload */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              {/* Excel Upload */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-2">
                   <FileSpreadsheet className="w-5 h-5" />
-                  Excel Upload
-                </CardTitle>
-                <CardDescription>
-                  Upload an Excel file (.xlsx, .xls)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                  <Label className="text-base font-medium">Excel Upload</Label>
+                </div>
                 <div>
-                  <Label htmlFor="excel-file">Excel File</Label>
+                  <Label htmlFor="excel-file">Excel File (.xlsx, .xls)</Label>
                   <Input
                     id="excel-file"
                     type="file"
@@ -245,172 +310,209 @@ const DataReconciliation = () => {
                     onChange={handleExcelUpload}
                   />
                 </div>
-                {excelData.length > 0 && (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <CheckCircle className="w-4 h-4" />
-                    <span className="text-sm">Uploaded ({excelData.length} rows)</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Main Content Tabs */}
+      {currentFile ? (
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="line-items">Line Items</TabsTrigger>
+            <TabsTrigger value="validation">Validation</TabsTrigger>
+            <TabsTrigger value="cpt-matching">CPT Matching</TabsTrigger>
+            <TabsTrigger value="ncci-edits">NCCI Edits</TabsTrigger>
+            <TabsTrigger value="ucr-pulling">UCR Pulling</TabsTrigger>
+            <TabsTrigger value="excel-report">Excel Report</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="line-items" className="space-y-6">
+            {currentData.length > 0 ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Line Items - {currentFile.name}</CardTitle>
+                  <CardDescription>{currentData.length} records found</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          {Object.keys(currentData[0]).map((key) => (
+                            <th key={key} className="border border-gray-300 px-4 py-2 text-left">
+                              {key}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentData.map((row, index) => (
+                          <tr key={index}>
+                            {Object.values(row).map((value, cellIndex) => (
+                              <td key={cellIndex} className="border border-gray-300 px-4 py-2">
+                                {String(value)}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                )}
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="text-center py-12 text-muted-foreground">
+                No line items to display.
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="validation" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-lg font-semibold">Data Validation</h4>
+                <p className="text-muted-foreground">
+                  AI-powered validation to identify data quality issues
+                </p>
+              </div>
+              <Button 
+                onClick={runAIInsights}
+                disabled={isAnalyzing || currentData.length === 0}
+                className="flex items-center gap-2"
+              >
+                <Brain className="w-4 h-4" />
+                {isAnalyzing ? 'Analyzing...' : 'Run Validation'}
+              </Button>
+            </div>
+
+            <Separator />
+
+            {discrepancies.length > 0 ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Badge variant="outline">{discrepancies.length} Issues Found</Badge>
+                  <Badge variant="destructive">
+                    {discrepancies.filter(d => d.severity === 'high').length} High Priority
+                  </Badge>
+                  <Badge variant="default">
+                    {discrepancies.filter(d => d.severity === 'medium').length} Medium Priority
+                  </Badge>
+                  <Badge variant="secondary">
+                    {discrepancies.filter(d => d.severity === 'low').length} Low Priority
+                  </Badge>
+                </div>
+
+                <div className="space-y-3">
+                  {discrepancies.map((discrepancy, index) => (
+                    <Alert key={index}>
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertTitle className="flex items-center gap-2">
+                        Row {discrepancy.row} - {discrepancy.column}
+                        <Badge variant={getSeverityColor(discrepancy.severity)}>
+                          {discrepancy.severity}
+                        </Badge>
+                      </AlertTitle>
+                      <AlertDescription>
+                        <p>{discrepancy.issue}</p>
+                        {discrepancy.suggestion && (
+                          <p className="mt-1 text-blue-600">
+                            <strong>Suggestion:</strong> {discrepancy.suggestion}
+                          </p>
+                        )}
+                      </AlertDescription>
+                    </Alert>
+                  ))}
+                </div>
+              </div>
+            ) : isAnalyzing ? (
+              <div className="text-center py-8">
+                <Brain className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+                <p className="text-muted-foreground">Analyzing data for discrepancies...</p>
+              </div>
+            ) : (
+              <Alert>
+                <CheckCircle className="h-4 w-4" />
+                <AlertTitle>Ready for Validation</AlertTitle>
+                <AlertDescription>
+                  Click "Run Validation" to scan your data for potential issues and discrepancies.
+                </AlertDescription>
+              </Alert>
+            )}
+          </TabsContent>
+
+          <TabsContent value="cpt-matching" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>CPT Code Matching</CardTitle>
+                <CardDescription>Match and validate CPT codes in your data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8 text-muted-foreground">
+                  CPT matching functionality coming soon...
+                </div>
               </CardContent>
             </Card>
-          </div>
-        </TabsContent>
+          </TabsContent>
 
-        <TabsContent value="preview" className="space-y-6">
-          {(sheetData.length > 0 || excelData.length > 0) ? (
-            <div className="space-y-6">
-              {sheetData.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Google Sheets Data</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                          <tr className="bg-gray-50">
-                            {Object.keys(sheetData[0]).map((key) => (
-                              <th key={key} className="border border-gray-300 px-4 py-2 text-left">
-                                {key}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {sheetData.map((row, index) => (
-                            <tr key={index}>
-                              {Object.values(row).map((value, cellIndex) => (
-                                <td key={cellIndex} className="border border-gray-300 px-4 py-2">
-                                  {String(value)}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+          <TabsContent value="ncci-edits" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>NCCI Edits</CardTitle>
+                <CardDescription>Apply National Correct Coding Initiative edits</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8 text-muted-foreground">
+                  NCCI edits functionality coming soon...
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-              {excelData.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Excel Data</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="overflow-x-auto">
-                      <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                          <tr className="bg-gray-50">
-                            {Object.keys(excelData[0]).map((key) => (
-                              <th key={key} className="border border-gray-300 px-4 py-2 text-left">
-                                {key}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {excelData.map((row, index) => (
-                            <tr key={index}>
-                              {Object.values(row).map((value, cellIndex) => (
-                                <td key={cellIndex} className="border border-gray-300 px-4 py-2">
-                                  {String(value)}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          ) : (
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>No Data Available</AlertTitle>
-              <AlertDescription>
-                Please upload data sources in the "Data Sources" tab first.
-              </AlertDescription>
-            </Alert>
-          )}
-        </TabsContent>
+          <TabsContent value="ucr-pulling" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>UCR Pulling</CardTitle>
+                <CardDescription>Pull Usual, Customary, and Reasonable rates</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8 text-muted-foreground">
+                  UCR pulling functionality coming soon...
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        <TabsContent value="insights" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-lg font-semibold">AI Data Quality Analysis</h4>
-              <p className="text-muted-foreground">
-                Identify potential data discrepancies and quality issues
-              </p>
-            </div>
-            <Button 
-              onClick={runAIInsights}
-              disabled={isAnalyzing || (sheetData.length === 0 && excelData.length === 0)}
-              className="flex items-center gap-2"
-            >
-              <Brain className="w-4 h-4" />
-              {isAnalyzing ? 'Analyzing...' : 'Run AI Analysis'}
-            </Button>
-          </div>
-
-          <Separator />
-
-          {discrepancies.length > 0 ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <Badge variant="outline">{discrepancies.length} Issues Found</Badge>
-                <Badge variant="destructive">
-                  {discrepancies.filter(d => d.severity === 'high').length} High Priority
-                </Badge>
-                <Badge variant="default">
-                  {discrepancies.filter(d => d.severity === 'medium').length} Medium Priority
-                </Badge>
-                <Badge variant="secondary">
-                  {discrepancies.filter(d => d.severity === 'low').length} Low Priority
-                </Badge>
-              </div>
-
-              <div className="space-y-3">
-                {discrepancies.map((discrepancy, index) => (
-                  <Alert key={index}>
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertTitle className="flex items-center gap-2">
-                      Row {discrepancy.row} - {discrepancy.column}
-                      <Badge variant={getSeverityColor(discrepancy.severity)}>
-                        {discrepancy.severity}
-                      </Badge>
-                    </AlertTitle>
-                    <AlertDescription>
-                      <p>{discrepancy.issue}</p>
-                      {discrepancy.suggestion && (
-                        <p className="mt-1 text-blue-600">
-                          <strong>Suggestion:</strong> {discrepancy.suggestion}
-                        </p>
-                      )}
-                    </AlertDescription>
-                  </Alert>
-                ))}
-              </div>
-            </div>
-          ) : isAnalyzing ? (
-            <div className="text-center py-8">
-              <Brain className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-              <p className="text-muted-foreground">Analyzing data for discrepancies...</p>
-            </div>
-          ) : (
-            <Alert>
-              <CheckCircle className="h-4 w-4" />
-              <AlertTitle>Ready for Analysis</AlertTitle>
-              <AlertDescription>
-                Click "Run AI Analysis" to scan your data for potential issues and discrepancies.
-              </AlertDescription>
-            </Alert>
-          )}
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="excel-report" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Excel Report</CardTitle>
+                <CardDescription>Generate comprehensive Excel reports</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-center py-8 text-muted-foreground">
+                  Excel report generation coming soon...
+                </div>
+                <div className="flex justify-center">
+                  <Button disabled>
+                    <FileSpreadsheet className="w-4 h-4 mr-2" />
+                    Generate Report
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      ) : (
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>No File Selected</AlertTitle>
+          <AlertDescription>
+            Please upload a file or connect a Google Sheet to get started.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 };
