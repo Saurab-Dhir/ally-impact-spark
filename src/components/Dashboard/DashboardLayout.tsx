@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Globe, Settings, Zap, MessageSquare, BarChart3 } from 'lucide-react';
+import { Globe, Settings, Zap, MessageSquare, BarChart3, Database } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MetricsGrid from './MetricsGrid';
@@ -14,6 +14,7 @@ import AnimatedCounter from '../Shared/AnimatedCounter';
 import AdminDashboard from '../HQ/AdminDashboard';
 import FileUploader from '../Partners/FileUploader';
 import GoogleSheetsConnector from './GoogleSheetsConnector';
+import DataReconciliation from './DataReconciliation';
 type ViewMode = 'hq' | 'partner';
 const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
@@ -143,7 +144,7 @@ const DashboardLayout = () => {
 
         {/* Main Tabs */}
         <Tabs defaultValue="metrics" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="metrics" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               Communications
@@ -151,6 +152,10 @@ const DashboardLayout = () => {
             <TabsTrigger value="communications" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Metrics
+            </TabsTrigger>
+            <TabsTrigger value="reconciliation" className="flex items-center gap-2">
+              <Database className="w-4 h-4" />
+              Data Reconciliation
             </TabsTrigger>
           </TabsList>
           
@@ -182,6 +187,10 @@ const DashboardLayout = () => {
                 <LiveMap />
               </div>
             )}
+          </TabsContent>
+          
+          <TabsContent value="reconciliation" className="space-y-6">
+            <DataReconciliation />
           </TabsContent>
         </Tabs>
       </main>
