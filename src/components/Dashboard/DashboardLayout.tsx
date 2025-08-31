@@ -13,7 +13,6 @@ import AnimatedWorldMap from '../Shared/AnimatedWorldMap';
 import AnimatedCounter from '../Shared/AnimatedCounter';
 import AdminDashboard from '../HQ/AdminDashboard';
 import FileUploader from '../Partners/FileUploader';
-import GoogleSheetsConnector from './GoogleSheetsConnector';
 type ViewMode = 'hq' | 'partner';
 const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
@@ -88,7 +87,7 @@ const DashboardLayout = () => {
         <div className="mb-12 relative overflow-hidden rounded-3xl hero-gradient text-white shadow-soft">
           <FloatingParticles />
           
-          <div className="relative z-10 p-4 lg:p-6 mx-0 px-[25px] py-[25px] my-0 text-center">
+          <div className="relative z-10 p-4 lg:p-6 mx-0 px-[25px] py-[25px] my-0">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               {/* Hero Content */}
               <div>
@@ -132,7 +131,7 @@ const DashboardLayout = () => {
               
               {/* Animated World Map */}
               <div className="flex justify-center lg:justify-end">
-                <AnimatedWorldMap />
+                
               </div>
             </div>
           </div>
@@ -159,11 +158,6 @@ const DashboardLayout = () => {
           </TabsContent>
           
           <TabsContent value="communications" className="space-y-6">
-            {/* Google Sheets Connector */}
-            <div className="enhanced-card p-6">
-              <GoogleSheetsConnector />
-            </div>
-            
             {/* Impact Metrics - Full Width */}
             <div className="enhanced-card">
               <MetricsGrid />
