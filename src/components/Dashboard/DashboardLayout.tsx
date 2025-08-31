@@ -137,32 +137,29 @@ const DashboardLayout = () => {
         </div>
 
         {/* Enhanced Dashboard Grid */}
-        <div className="grid grid-cols-12 gap-6">
-          {/* Data Input Sidebar */}
-          <div className="col-span-12 lg:col-span-3 xl:col-span-3 space-y-6">
-            
-            <div className="enhanced-card p-6">
-              <PhotoUploader />
-            </div>
-            <div className="enhanced-card p-6">
-              <QuickForms />
-            </div>
+        <div className="space-y-6">
+          {/* Impact Metrics - Full Width */}
+          <div className="enhanced-card">
+            <MetricsGrid />
           </div>
           
-          {/* Main Metrics */}
-          <div className="col-span-12 lg:col-span-6 xl:col-span-6 space-y-6">
-            <div className="enhanced-card">
-              <MetricsGrid />
-            </div>
-            <div className="enhanced-card">
+          {/* Photo Documentation - Full Width */}
+          <div className="enhanced-card p-6">
+            <PhotoUploader />
+          </div>
+          
+          {/* Live Updates - Full Width */}
+          <div className="enhanced-card">
+            <RealtimeUpdates />
+          </div>
+          
+          {/* Secondary Grid */}
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-span-8 enhanced-card">
               <LiveMap />
             </div>
-          </div>
-          
-          {/* Updates & Reports */}
-          <div className="col-span-12 lg:col-span-3 xl:col-span-3 space-y-6">
-            <div className="enhanced-card">
-              <RealtimeUpdates />
+            <div className="col-span-12 lg:col-span-4 enhanced-card p-6">
+              <QuickForms />
             </div>
           </div>
         </div>
