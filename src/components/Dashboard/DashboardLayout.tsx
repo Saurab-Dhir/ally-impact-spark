@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Globe, Settings, Zap } from 'lucide-react';
+import { Globe, Settings, Zap, MessageSquare, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MetricsGrid from './MetricsGrid';
 import VoiceRecorder from '../DataCapture/VoiceRecorder';
 import LiveMap from './LiveMap';
@@ -136,33 +137,67 @@ const DashboardLayout = () => {
           </div>
         </div>
 
-        {/* Enhanced Dashboard Grid */}
-        <div className="space-y-6">
-          {/* Impact Metrics - Full Width */}
-          <div className="enhanced-card">
-            <MetricsGrid />
-          </div>
+        {/* Main Tabs */}
+        <Tabs defaultValue="metrics" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="metrics" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Metrics
+            </TabsTrigger>
+            <TabsTrigger value="communications" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Communications
+            </TabsTrigger>
+          </TabsList>
           
-          {/* Photo Documentation - Full Width */}
-          <div className="enhanced-card p-6">
-            <PhotoUploader />
-          </div>
-          
-          {/* Live Updates - Full Width */}
-          <div className="enhanced-card">
-            <RealtimeUpdates />
-          </div>
-          
-          {/* Secondary Grid */}
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-12 lg:col-span-8 enhanced-card">
-              <LiveMap />
+          <TabsContent value="metrics" className="space-y-6">
+            {/* Impact Metrics - Full Width */}
+            <div className="enhanced-card">
+              <MetricsGrid />
             </div>
-            <div className="col-span-12 lg:col-span-4 enhanced-card p-6">
-              <QuickForms />
+            
+            {/* Photo Documentation - Full Width */}
+            <div className="enhanced-card p-6">
+              <PhotoUploader />
             </div>
-          </div>
-        </div>
+            
+            {/* Live Updates - Full Width */}
+            <div className="enhanced-card">
+              <RealtimeUpdates />
+            </div>
+            
+            {/* Secondary Grid */}
+            <div className="grid grid-cols-12 gap-6">
+              <div className="col-span-12 lg:col-span-8 enhanced-card">
+                <LiveMap />
+              </div>
+              <div className="col-span-12 lg:col-span-4 enhanced-card p-6">
+                <QuickForms />
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="communications" className="space-y-6">
+            <div className="enhanced-card p-6">
+              <VoiceRecorder />
+            </div>
+            
+            <div className="grid grid-cols-12 gap-6">
+              <div className="col-span-12 lg:col-span-6 enhanced-card">
+                <RealtimeUpdates />
+              </div>
+              <div className="col-span-12 lg:col-span-6 enhanced-card p-6">
+                <div className="text-center py-12">
+                  <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-semibold mb-2">Communication Center</h3>
+                  <p className="text-muted-foreground">
+                    Manage communications with partners, donors, and field teams.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>;
 };
