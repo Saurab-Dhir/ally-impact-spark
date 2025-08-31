@@ -89,14 +89,19 @@ export default {
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-hero': 'var(--gradient-hero)',
+				'gradient-hero-animated': 'var(--gradient-hero-animated)',
 				'gradient-prevention': 'var(--gradient-prevention)',
 				'gradient-provide': 'var(--gradient-provide)',
-				'gradient-prepare': 'var(--gradient-prepare)'
+				'gradient-prepare': 'var(--gradient-prepare)',
+				'gradient-glassmorphic': 'var(--gradient-glassmorphic)'
 			},
 			boxShadow: {
 				'card': 'var(--shadow-card)',
+				'card-new': 'var(--shadow-card-new)',
+				'card-hover': 'var(--shadow-card-hover)',
 				'soft': 'var(--shadow-soft)',
-				'glow': 'var(--shadow-glow)'
+				'glow': 'var(--shadow-glow)',
+				'live-glow': 'var(--shadow-live-glow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -171,7 +176,12 @@ export default {
 				'glow': 'glow 2s ease-in-out infinite alternate',
 				'counter-up': 'counter-up 2s cubic-bezier(0.4, 0, 0.2, 1)',
 				'slide-in-right': 'slide-in-right 0.3s ease-out',
-				'scale-in': 'scale-in 0.2s ease-out'
+				'scale-in': 'scale-in 0.2s ease-out',
+				'gradient-shift': 'gradient-shift 8s ease infinite',
+				'float': 'float 6s ease-in-out infinite',
+				'world-pulse': 'world-pulse 3s ease-in-out infinite',
+				'dot-pulse': 'dot-pulse 2s ease-in-out infinite',
+				'parallax': 'parallax 0.3s ease-out'
 			}
 		}
 	},

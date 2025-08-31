@@ -7,12 +7,16 @@ import LiveMap from './LiveMap';
 import RealtimeUpdates from './RealtimeUpdates';
 import PhotoUploader from '../DataCapture/PhotoUploader';
 import QuickForms from '../DataCapture/QuickForms';
+import FloatingParticles from '../Shared/FloatingParticles';
+import AnimatedWorldMap from '../Shared/AnimatedWorldMap';
+import AnimatedCounter from '../Shared/AnimatedCounter';
 
 type ViewMode = 'public' | 'donor' | 'partner' | 'hq';
 
 const DashboardLayout = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('hq');
   const [demoMode, setDemoMode] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const startDemo = () => {
     setDemoMode(true);
@@ -20,14 +24,27 @@ const DashboardLayout = () => {
     setTimeout(() => setDemoMode(false), 60000); // 1 minute demo
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50 shadow-soft">
-        <div className="px-6 py-4 flex items-center justify-between">
+      {/* Glassmorphic Header */}
+      <header className={cn(
+        "glassmorphic-header sticky top-0 z-50 transition-all duration-300",
+        isScrolled && "header-shrink"
+      )}>
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo and Title */}
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
+            <div className="logo-hover w-10 h-10 rounded-xl flex items-center justify-center shadow-glow"
+                 style={{ background: '#00b7c4' }}>
               <Globe className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -39,9 +56,9 @@ const DashboardLayout = () => {
               </p>
             </div>
             
-            {/* Live indicator */}
-            <div className="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full border border-green-200">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            {/* Enhanced Live indicator */}
+            <div className="flex items-center gap-2 px-3 py-1 bg-green-50/80 backdrop-blur-sm rounded-full border border-green-200/50">
+              <div className="live-indicator w-2 h-2" />
               <span className="text-sm font-medium text-green-700">Live</span>
             </div>
           </div>
@@ -86,48 +103,82 @@ const DashboardLayout = () => {
       
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
-        {/* Welcome Banner */}
-        <div className="mb-8 p-6 bg-gradient-hero rounded-2xl text-white shadow-soft">
-          <h2 className="text-2xl font-bold mb-2">
-            Welcome to the Impact Intelligence Hub
-          </h2>
-          <p className="text-white/90">
-            Real-time tracking of anti-trafficking efforts across Nepal, Cambodia, and Canada
-          </p>
-          <div className="mt-4 flex items-center gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-white/30 rounded-full" />
-              <span>3 Active Locations</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-white/30 rounded-full" />
-              <span>2,724 Lives Impacted This Year</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-white/30 rounded-full" />
-              <span>37K+ Lifetime Impact</span>
+        {/* Animated Hero Section */}
+        <div className="mb-12 relative overflow-hidden rounded-3xl hero-gradient text-white shadow-soft">
+          <FloatingParticles />
+          
+          <div className="relative z-10 p-8 lg:p-12">
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              {/* Hero Content */}
+              <div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-4 animate-fade-in">
+                  Welcome to the Impact Intelligence Hub
+                </h2>
+                <p className="text-white/90 text-lg mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                  Real-time tracking of anti-trafficking efforts across Nepal, Cambodia, and Canada
+                </p>
+                
+                {/* Animated Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center animate-scale-in" style={{ animationDelay: '0.4s' }}>
+                    <div className="text-3xl font-bold">
+                      <AnimatedCounter value={3} />
+                    </div>
+                    <div className="text-white/80 text-sm">Active Locations</div>
+                  </div>
+                  <div className="text-center animate-scale-in" style={{ animationDelay: '0.6s' }}>
+                    <div className="text-3xl font-bold">
+                      <AnimatedCounter value={2724} />
+                    </div>
+                    <div className="text-white/80 text-sm">Lives Impacted This Year</div>
+                  </div>
+                  <div className="text-center animate-scale-in" style={{ animationDelay: '0.8s' }}>
+                    <div className="text-3xl font-bold">
+                      <AnimatedCounter value={37000} suffix="+" />
+                    </div>
+                    <div className="text-white/80 text-sm">Lifetime Impact</div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Animated World Map */}
+              <div className="flex justify-center lg:justify-end">
+                <AnimatedWorldMap />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Dashboard Grid */}
+        {/* Enhanced Dashboard Grid */}
         <div className="grid grid-cols-12 gap-6">
           {/* Data Input Sidebar */}
-          <div className="col-span-12 lg:col-span-3 space-y-6">
-            <VoiceRecorder />
-            <PhotoUploader />
-            <QuickForms />
+          <div className="col-span-12 lg:col-span-3 xl:col-span-3 space-y-6">
+            <div className="enhanced-card p-6">
+              <VoiceRecorder />
+            </div>
+            <div className="enhanced-card p-6">
+              <PhotoUploader />
+            </div>
+            <div className="enhanced-card p-6">
+              <QuickForms />
+            </div>
           </div>
           
           {/* Main Metrics */}
-          <div className="col-span-12 lg:col-span-6 space-y-6">
-            <MetricsGrid />
-            <LiveMap />
+          <div className="col-span-12 lg:col-span-6 xl:col-span-6 space-y-6">
+            <div className="enhanced-card">
+              <MetricsGrid />
+            </div>
+            <div className="enhanced-card">
+              <LiveMap />
+            </div>
           </div>
           
           {/* Updates & Reports */}
-          <div className="col-span-12 lg:col-span-3 space-y-6">
-            <RealtimeUpdates />
+          <div className="col-span-12 lg:col-span-3 xl:col-span-3 space-y-6">
+            <div className="enhanced-card">
+              <RealtimeUpdates />
+            </div>
           </div>
         </div>
       </main>
