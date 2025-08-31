@@ -215,7 +215,7 @@ const MetricsGrid = () => {
   if (isLoading) {
     return (
       <div className="space-y-6 mx-[25px]">
-        <div className="flex items-center justify-between mx-[15px]">
+      <div className="flex items-center justify-between mx-[15px] mt-6">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-6 w-32" />
         </div>
@@ -234,7 +234,7 @@ const MetricsGrid = () => {
 
   return (
     <div className="space-y-6 mx-[25px]">
-      <div className="flex items-center justify-between mx-[15px]">
+      <div className="flex items-center justify-between mx-[15px] mt-6">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
           Impact Metrics
         </h2>
